@@ -1,0 +1,96 @@
+<html>
+	<head>
+		<script src="app.js" type="text/javascript"></script>
+		<link href="../style.css" rel="stylesheet">
+		<title>COP 4813: Internet Programming: About Me</title>
+	</head>
+	<body>
+		<div class="left">
+			<a href="../index.html">Home</a>
+			<br>
+			<a href="../assign1/index.html">Assignment 1</a>
+			<br>
+			<a href="#">Assignment 2</a>
+		</div>
+		<div class="center">
+			<span>First Name</span><span class="tab">Last Name</span><br>
+			<span><input type="text" id="firstName" ></span><span class="tab"><input type="text" id="lastName" ></span>
+			<table class="assign2Form">
+				<tbody>
+					<tr>
+						<td>
+							First Name
+						</td>
+						<td>
+							Last Name
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="firstName" >
+						</td>
+						<td>
+							<input type="text" id="lastName" >
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<input type="radio" name="sex" value="male" id="sexMale" checked>Male
+							<input type="radio" name="sex" value="female" id="sexFemale">Female
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Days Available for Work
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>Mon<input type="checkbox" name="vehicle" value="Mon" id="mon"></label>
+						</td>
+						<td>
+							<label>Tue<input type="checkbox" name="vehicle" value="Tue" id="tue"></label>
+						</td>
+						<td>
+							<label>Wed<input type="checkbox" name="vehicle" value="Wed" id="wed"></label>
+						</td>
+						<td>
+							<label>Thr<input type="checkbox" name="vehicle" value="Thr" id="thr"></label>
+						</td>
+						<td>
+							<label>Fri<input type="checkbox" name="vehicle" value="Fri" id="fri"></label>
+						</td>
+						<td>
+							<label>Sat<input type="checkbox" name="vehicle" value="Sat" id="sat"></label>
+						</td>
+						<td>
+							<label>Sun<input type="checkbox" name="vehicle" value="Sun" id="sun"></label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Prefered Time of Day
+						</td>
+						<td>
+							<select id="timeOfDay">
+								<option value="Morning">Morning</option>
+								<option value="Afternoon">Afternoon</option>
+								<option value="Night">Night</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr colspan="1">
+						<td>
+							<input type="submit" id="submitData" onclick="Submit()" value="Submit">
+						</td>
+						<td>
+							<input type="button" id="resetData" onclick="Reset()" value="Reset">
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</body>
+</html>
