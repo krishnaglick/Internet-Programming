@@ -3,10 +3,22 @@ a:hover
 	font-family: "arial";
 }
 
-p, h1, h2, h3, h4, h5
+p, h1, h2, h3, h4, h5, h6
 {
 	font-family: "arial";
-	color: red;
+	color: black;
+}
+
+body
+{
+	margin: 1px 1px 1px 1px;
+	background-image: url("./imgs/bgimg.jpg");
+	background-repeat: repeat;
+}
+
+hr
+{
+	color: green;
 }
 
 .center
