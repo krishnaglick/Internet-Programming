@@ -1,13 +1,41 @@
+a:hover
+{
+	font-family: "arial";
+}
+
+p, h1, h2, h3, h4, h5
+{
+	font-family: "arial";
+	color: red;
+}
+
 .center
 {
 	margin-left: 20%;
 	width: 60%;
+}
+.center a:hover
+{
+	text-shadow: 2px 2px 8px black;
 }
 .left
 {
 	margin-left: 5%;
 	float: left;
 	position: absolute;
+}
+.left a
+{
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.left a:link, a:visited, a:active
+{
+	color: blue;
+}
+.left a:hover
+{
+	color: #3ca2aa;
 }
 .sub-left
 {
@@ -18,4 +46,12 @@
 {
 	width: 50%;
 	float: right;
+}
+.self
+{
+	margin-left: 10px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+	width: 171.35px;
+	height: 316.4px;
+	border-radius: 150px;
 }
