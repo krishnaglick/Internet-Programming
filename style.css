@@ -1,0 +1,21 @@
+.center
+{
+	margin-left: 20%;
+	width: 60%;
+}
+.left
+{
+	margin-left: 5%;
+	float: left;
+	position: absolute;
+}
+.sub-left
+{
+	width: 50%;
+	float: left;
+}
+.sub-right
+{
+	width: 50%;
+	float: right;
+}
