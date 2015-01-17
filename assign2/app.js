@@ -1,10 +1,16 @@
 function Submit() {
+	var errorMessage = "";
 	if(firstName.value == "") {
-		alert("Please enter in a first name!");
+		errorMessage = "Please enter in a first name!";
 	}
 	
 	if(lastName.value == "") {
-		alert("Please enter in a last name!");
+		if(errorMessage != "") {
+			errorMessage += "\nPlease enter in a last name!";
+		}
+		else {
+			errorMessage = "Please enter in a last name!";
+		}
 	}
 	if(	mon.checked == false &&
 		tue.checked == false &&
@@ -13,7 +19,17 @@ function Submit() {
 		fri.checked == false &&
 		sat.checked == false &&
 		sun.checked == false) {
-			alert("Please choose at least one day you can work!");
+			if(errorMessage != "") {
+				errorMessage += "\nPlease choose at least one day you can work!";
+			}
+			else {
+				errorMessage = "Please choose at least one day you can work!";
+			}
+	}
+	
+	if(errorMessage != "") {
+		alert(errorMessage);
+		return;
 	}
 	
 	alert("Your data has been submitted!");
