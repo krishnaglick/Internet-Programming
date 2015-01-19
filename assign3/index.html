@@ -1,50 +1,44 @@
 <html>
 	<head>
-		<script src="../bootstrap.min.js" type="text/javascript"></script>
-		<script src="../jquery.min.js" type="text/javascript"></script>
-		<script src="../knockout.min.js" type="text/javascript"></script>
+		<script src="../assets/jquery.min.js" type="text/javascript"></script>
+		<script src="../assets/semantic.min.js" type="text/javascript"></script>
+		<script src="../assets/knockout.min.js" type="text/javascript"></script>
+		<script src="StatisticsViewModel.js" type="text/javascript"></script>
 		<script src="Statistics.js" type="text/javascript"></script>
-		<link href="../bootstrap.min.css" rel="stylesheet">
-		<title>COP 4813: Internet Programming: About Me</title>
+		<link href="../assets/semantic.min.css" rel="stylesheet">
+		<link href="assign3.css" rel="stylesheet">
+		<title>COP 4813: Internet Programming: Math Magic</title>
 	</head>
 	<body>
-		<div class="left">
-			<a href="../index.html">Home</a>
-			<br>
-			<a href="../assign1/index.html">Assignment 1</a>
-			<br>
-			<a href="#">Assignment 2</a>
-			<br>
-			<a href="../assign3/index.html">Assignment 3</a>
+		<div class="ui menu">
+			<a class="item" href="../index.html">
+				<i class="home icon"></i> Home
+			</a>
+			<a class="item" href="../assign1/index.html">
+				<i class="circle thin icon"></i> Assignment 1
+			</a>
+			<a class="item" href="../assign2/index.html">
+				<i class="circle thin icon"></i> Assignment 2
+			</a>
+			<a class="active item" href="#">
+				<i class="circle icon"></i> Assignment 3
+			</a>
 		</div>
-		<div class="center">
-			<span class="grid">
-				<h2>Employment Application | <a href="flowchart.jpg">Flowchart</a></h2>
-				<span>First Name</span><span class="grid-15">Last Name</span><br>
-				<span><input type="text" id="firstName" ></span>
-				<span class="grid-15"><input type="text" id="lastName" ></span><br>
-				
-				<input type="radio" name="sex" value="male" id="sexMale" checked>
-				<span class="grid-2">Male</span>
-				<input type="radio" name="sex" value="female" id="sexFemale" class="grid-6">
-				<span class="grid-8">Female</span><br>
-				<span>Days Available for Work</span><br>
-				<label><input type="checkbox" name="vehicle" value="Mon" id="mon">Mon</label>
-				<label class="grid-5"><input type="checkbox" name="vehicle" value="Tue" id="tue">Tue</label>
-				<label class="grid-10"><input type="checkbox" name="vehicle" value="Wed" id="wed">Wed</label>
-				<label class="grid-15"><input type="checkbox" name="vehicle" value="Thr" id="thr">Thr</label>
-				<label class="grid-20"><input type="checkbox" name="vehicle" value="Fri" id="fri">Fri</label>
-				<label class="grid-25"><input type="checkbox" name="vehicle" value="Sat" id="sat">Sat</label>
-				<label class="grid-30"><input type="checkbox" name="vehicle" value="Sun" id="sun">Sun</label><br>
-				<span>Preferred Time of Day</span><br>
-				<select id="timeOfDay">
-					<option value="Morning">Morning</option>
-					<option value="Afternoon">Afternoon</option>
-					<option value="Night">Night</option>
-				</select><br>
-				<input type="submit" id="submitData" onclick="Submit()" value="Submit">
-				<input type="button" id="resetData" onclick="Reset()" value="Reset" class="grid-7">
-			</span>
+		
+		<div class="ui grid">
+			<div class="four wide column"></div>
+			<div class="twelve wide column">
+				<h3>Math Magic</h3>
+				<textarea class="ui input" style="resize: none;" rows="4" cols="50" placeholder="Please enter in a comma delimited list of numbers" data-bind="textInput: numberList" autofocus></textarea>
+			</div>
+			<div class="four wide column"></div>
+			<div class="four wide column" data-bind="text: 'Mean: ' + mean(), visible: mean() != ''"></div>
+			<div class="four wide column" data-bind="text: 'Total: ' +  sum(), visible: sum() !=''"></div>
+			<div class="four wide column" data-bind="text: 'Standard Deviation: ' + standardDeviation(), visible: standardDeviation() != ''"></div>
+			<div class="four wide column" data-bind="text: 'Sorted List: ' + numberListSorted(), visible: numberListSorted() != ''"></div>
+			<div class="four wide column" data-bind="text: 'Mode: ' + mode(), visible: mode() != ''"></div>
+			<div class="four wide column" data-bind="text: 'Median: ' + median(), visible: median() != ''"></div>
+			<div class="four wide column" data-bind="text: 'Variance: ' + variance(), visible: variance() != ''"></div>
 		</div>
 	</body>
 </html>
