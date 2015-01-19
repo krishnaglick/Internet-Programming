@@ -1,10 +1,8 @@
 StatisticsViewModel = function() {
 	var self = this;
 	this.count = 0;
-
-	this.numberList = ko.observable("").extend({
-		rateLimit: 500
-	});
+	
+	this.numberList = ko.observable("");
 	
 	this.numberListParsed = ko.computed(function() {
 		var numberSet = [];
@@ -78,7 +76,7 @@ StatisticsViewModel = function() {
 		
 		var biggestKey = 0;
 		Object.keys(modeSet).forEach(function(key) {
-			biggestKey = modeSet[key] > modeSet[biggestKey] ? key : biggestKey;
+			biggestKey = modeSet[key] > modeSet[biggestKey] && modeSet[key] > 1 ? key : biggestKey;
 		});
 		
 		if(biggestKey == 0)
@@ -91,8 +89,17 @@ StatisticsViewModel = function() {
 	this.median = ko.computed(function() {
 		if(self.numberListParsed().length == 0)
 			return "";
+			
+		var median;
+		if(self.count % 2 == 0) {
+			var medIndex = self.count / 2;
+			median = (self.numberListSorted()[medIndex] + self.numberListSorted()[medIndex - 1]) / 2;
+		}
+		else {
+			median = self.numberListSorted()[Math.floor(self.count / 2)];
+		}
 		
-		return self.numberListSorted()[Math.floor(self.count / 2)];
+		return median; self.numberListSorted()[medianIndex].toFixed(2);
 	});
 	
 	this.standardDeviation = ko.computed(function() {
