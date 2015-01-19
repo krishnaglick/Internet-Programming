@@ -1,4 +1,3 @@
-var stats_view_model;
 $(function() {
 	stats_view_model = new StatisticsViewModel();
 	
