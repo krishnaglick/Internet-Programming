@@ -42,7 +42,7 @@ StatisticsViewModel = function() {
 		if(total == 0 || isNaN(total))
 			return "";
 			
-		return total;
+		return total.toFixed(2);
 	});
 	
 	this.variance = ko.computed(function() {
@@ -82,7 +82,7 @@ StatisticsViewModel = function() {
 		if(biggestKey == 0)
 			return "";
 		
-		return biggestKey;
+		return parseInt(biggestKey).toFixed(2);
 	});
 	
 	
