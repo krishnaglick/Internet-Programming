@@ -1,12 +1,15 @@
-describe("Statistics Test 1", function() {
-	var stats_view_model = new StatisticsViewModel();
+describe("Statistics Test Suite", function() {
+	var TestDataSet1 = "37,13,56,25,2,37";
+	var TestDataSet2 = "4,25,65,32";
+	var TestDataSet3 = "1,2,99,100,2000,1000,45";
 	
 	it("should have a new stats view model", function() {
+		var stats_view_model = new StatisticsViewModel();
 		expect(stats_view_model).toBeDefined();
 		expect(stats_view_model.count).toBe(0);
 		expect(stats_view_model.sum()).toBe("N/A");
 		expect(stats_view_model.variance()).toBe("N/A");
-		expect(stats_view_model.numberList()).toBe("N/A");
+		expect(stats_view_model.numberList()).toBe("");
 		expect(stats_view_model.mean()).toBe("N/A");
 		expect(stats_view_model.median()).toBe("N/A");
 		expect(stats_view_model.mode()).toBe("N/A");
@@ -14,14 +17,10 @@ describe("Statistics Test 1", function() {
 		expect(stats_view_model.numberListSorted()).toBe("N/A");
 		expect(stats_view_model.numberListParsed().length).toBe(0);
 	});
-});
-
-describe("Statistics Test 2", function() {
-	var stats_view_model = new StatisticsViewModel();
-	var TestDataSet = "13,56,25,2,37,37";
 	
-	stats_view_model.numberList(TestDataSet);
 	it("should calculate correct data for test set 1", function() {
+		var stats_view_model = new StatisticsViewModel();
+		stats_view_model.numberList(TestDataSet1);
 		expect(stats_view_model.count).toBe(6);
 		expect(stats_view_model.sum()).toEqual("170.00");
 		expect(stats_view_model.variance()).toBe("309.22");
@@ -31,14 +30,10 @@ describe("Statistics Test 2", function() {
 		expect(stats_view_model.standardDeviation()).toBe("17.58");
 		expect(stats_view_model.numberListSorted()).toEqual([2,13,25,37,37,56]);
 	});
-});
-
-describe("Statistics Test 3", function() {
-	var stats_view_model = new StatisticsViewModel();
-	var TestDataSet = "4,25,65,32";
 	
-	stats_view_model.numberList(TestDataSet);
 	it("should calculate correct data for test set 2", function() {
+		var stats_view_model = new StatisticsViewModel();
+		stats_view_model.numberList(TestDataSet2);
 		expect(stats_view_model.count).toBe(4);
 		expect(stats_view_model.sum()).toBe("126.00");
 		expect(stats_view_model.variance()).toBe("480.25");
@@ -48,14 +43,10 @@ describe("Statistics Test 3", function() {
 		expect(stats_view_model.standardDeviation()).toBe("21.91");
 		expect(stats_view_model.numberListSorted()).toEqual([4,25,32,65]);
 	});
-});
-
-describe("Statistics Test 4", function() {
-	var stats_view_model = new StatisticsViewModel();
-	var TestDataSet = "1,2,99,100,1000,2000,45";
 	
-	stats_view_model.numberList(TestDataSet);
 	it("should calculate correct data for test set 3", function() {
+		var stats_view_model = new StatisticsViewModel();
+		stats_view_model.numberList(TestDataSet3);
 		expect(stats_view_model.count).toBe(7);
 		expect(stats_view_model.sum()).toBe("3247.00");
 		expect(stats_view_model.variance()).toBe("502240.98");

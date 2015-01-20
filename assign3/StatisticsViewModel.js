@@ -104,6 +104,6 @@ StatisticsViewModel = function() {
 	
 	this.standardDeviation = ko.computed(function() {
 		var stdDev = Math.sqrt(self.variance());
-		return stdDev == "N/A" ? "N/A" : stdDev.toFixed(2);
+		return isNaN(stdDev) ? "N/A" : stdDev.toFixed(2);
 	});
 }

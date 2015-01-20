@@ -34,22 +34,36 @@
 			</div>
 			<div class="four wide column"></div>
 			
-			<div class="four wide column" data-bind="text: mean() != '' ? 'Mean: ' + mean() : 'Mean: NA'"></div>
-			<div class="eight wide column" data-bind="text: median() != '' ? 'Median: ' + median() : 'Median: NA'"></div>
+			<div class="four wide column">
+				Mean: <span data-bind="text: mean"></span>
+			</div>
+			<div class="eight wide column">
+				Median: <span data-bind="text: median"></span>
+			</div>
 			
 			<div class="four wide column"></div>
 			
-			<div class="four wide column" data-bind="text: mode() != '' ? 'Mode: ' + mode() : 'Mode: NA'"></div>
-			<div class="eight wide column" data-bind="text: sum() != '' ? 'Total: ' + sum() : 'Total: NA'"></div>
+			<div class="four wide column">
+				Mode: <span data-bind="text: mode"></span>
+			</div>
+			<div class="eight wide column">
+				Total: <span data-bind="text: sum"></span>
+			</div>
 			
 			<div class="four wide column"></div>
 			
-			<div class="four wide column" data-bind="text: standardDeviation() != '' ? 'Standard Deviation: ' + standardDeviation() : 'Standard Deviation: NA'"></div>
-			<div class="eight wide column" data-bind="text: variance() != '' ? 'Variance: ' + variance() : 'Variance: NA'"></div>
+			<div class="four wide column">
+				Standard Deviation: <span data-bind="text: standardDeviation"></span>
+			</div>
+			<div class="eight wide column">
+				Variance: <span data-bind="text: variance"></span>
+			</div>
 			
 			<div class="four wide column"></div>
 			
-			<div class="twelve wide column" data-bind="text: numberListSorted() != '' ? 'Sorted List: ' + numberListSorted() : 'Sorted List: NA'"></div>
+			<div class="twelve wide column">
+				Sorted List: <span data-bind="text: numberListSorted"></span>
+			</div>
 		</div>
 	</body>
 </html>
