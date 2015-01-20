@@ -27,7 +27,7 @@ StatisticsViewModel = function() {
 		var mean = total/self.count;
 		
 		if(mean == 0 || isNaN(mean))
-			return "";
+			return "N/A";
 			
 		return mean.toFixed(2);
 	});
@@ -40,7 +40,7 @@ StatisticsViewModel = function() {
 		});
 		
 		if(total == 0 || isNaN(total))
-			return "";
+			return "N/A";
 			
 		return total.toFixed(2);
 	});
@@ -53,14 +53,14 @@ StatisticsViewModel = function() {
 		});
 		
 		if(variance == 0)
-			return "";
+			return "N/A";
 		
 		return (variance / self.count).toFixed(2);
 	});
 	
 	this.numberListSorted = ko.computed(function() {
 		if(self.numberListParsed().length == 0)
-			return "";
+			return "N/A";
 			
 		return self.numberListParsed().sort(function(a, b) {
 			return a - b;
@@ -80,7 +80,7 @@ StatisticsViewModel = function() {
 		});
 		
 		if(biggestKey == 0)
-			return "";
+			return "N/A";
 		
 		return parseInt(biggestKey).toFixed(2);
 	});
@@ -88,7 +88,7 @@ StatisticsViewModel = function() {
 	
 	this.median = ko.computed(function() {
 		if(self.numberListParsed().length == 0)
-			return "";
+			return "N/A";
 			
 		var median;
 		if(self.count % 2 == 0) {
@@ -99,11 +99,11 @@ StatisticsViewModel = function() {
 			median = self.numberListSorted()[Math.floor(self.count / 2)];
 		}
 		
-		return median; self.numberListSorted()[medianIndex].toFixed(2);
+		return median.toFixed(2);
 	});
 	
 	this.standardDeviation = ko.computed(function() {
 		var stdDev = Math.sqrt(self.variance());
-		return stdDev == "" ? "" : stdDev.toFixed(2);
+		return stdDev == "N/A" ? "N/A" : stdDev.toFixed(2);
 	});
 }

@@ -4,29 +4,29 @@ describe("Statistics Test 1", function() {
 	it("should have a new stats view model", function() {
 		expect(stats_view_model).toBeDefined();
 		expect(stats_view_model.count).toBe(0);
-		expect(stats_view_model.sum()).toBe("");
-		expect(stats_view_model.variance()).toBe("");
-		expect(stats_view_model.numberList()).toBe("");
-		expect(stats_view_model.mean()).toBe("");
-		expect(stats_view_model.median()).toBe("");
-		expect(stats_view_model.mode()).toBe("");
-		expect(stats_view_model.standardDeviation()).toBe("");
-		expect(stats_view_model.numberListSorted()).toBe("");
+		expect(stats_view_model.sum()).toBe("N/A");
+		expect(stats_view_model.variance()).toBe("N/A");
+		expect(stats_view_model.numberList()).toBe("N/A");
+		expect(stats_view_model.mean()).toBe("N/A");
+		expect(stats_view_model.median()).toBe("N/A");
+		expect(stats_view_model.mode()).toBe("N/A");
+		expect(stats_view_model.standardDeviation()).toBe("N/A");
+		expect(stats_view_model.numberListSorted()).toBe("N/A");
 		expect(stats_view_model.numberListParsed().length).toBe(0);
 	});
 });
 
 describe("Statistics Test 2", function() {
 	var stats_view_model = new StatisticsViewModel();
-	var TestDataSet1 = "13,56,25,2,37,37";
+	var TestDataSet = "13,56,25,2,37,37";
 	
-	stats_view_model.numberList(TestDataSet1);
+	stats_view_model.numberList(TestDataSet);
 	it("should calculate correct data for test set 1", function() {
 		expect(stats_view_model.count).toBe(6);
 		expect(stats_view_model.sum()).toEqual("170.00");
 		expect(stats_view_model.variance()).toBe("309.22");
 		expect(stats_view_model.mean()).toBe("28.33");
-		expect(stats_view_model.median()).toBe(31);
+		expect(stats_view_model.median()).toBe("31.00");
 		expect(stats_view_model.mode()).toBe("37.00");
 		expect(stats_view_model.standardDeviation()).toBe("17.58");
 		expect(stats_view_model.numberListSorted()).toEqual([2,13,25,37,37,56]);
@@ -35,17 +35,34 @@ describe("Statistics Test 2", function() {
 
 describe("Statistics Test 3", function() {
 	var stats_view_model = new StatisticsViewModel();
-	var TestDataSet2 = "4,25,65,32";
+	var TestDataSet = "4,25,65,32";
 	
-	stats_view_model.numberList(TestDataSet2);
+	stats_view_model.numberList(TestDataSet);
 	it("should calculate correct data for test set 2", function() {
 		expect(stats_view_model.count).toBe(4);
 		expect(stats_view_model.sum()).toBe("126.00");
 		expect(stats_view_model.variance()).toBe("480.25");
 		expect(stats_view_model.mean()).toBe("31.50");
-		expect(stats_view_model.median()).toBe(28.5);
-		expect(stats_view_model.mode()).toBe("");
+		expect(stats_view_model.median()).toBe("28.50");
+		expect(stats_view_model.mode()).toBe("N/A");
 		expect(stats_view_model.standardDeviation()).toBe("21.91");
 		expect(stats_view_model.numberListSorted()).toEqual([4,25,32,65]);
+	});
+});
+
+describe("Statistics Test 4", function() {
+	var stats_view_model = new StatisticsViewModel();
+	var TestDataSet = "1,2,99,100,1000,2000,45";
+	
+	stats_view_model.numberList(TestDataSet);
+	it("should calculate correct data for test set 3", function() {
+		expect(stats_view_model.count).toBe(7);
+		expect(stats_view_model.sum()).toBe("3247.00");
+		expect(stats_view_model.variance()).toBe("502240.98");
+		expect(stats_view_model.mean()).toBe("463.86");
+		expect(stats_view_model.median()).toBe("99.00");
+		expect(stats_view_model.mode()).toBe("N/A");
+		expect(stats_view_model.standardDeviation()).toBe("708.69");
+		expect(stats_view_model.numberListSorted()).toEqual([1,2,45,99,100,1000,2000]);
 	});
 });
