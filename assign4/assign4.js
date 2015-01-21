@@ -15,10 +15,11 @@ $(function() {
 	black.animation = setTimeout(black.animate, 1000);
 	
 	var grey = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "grey");
-	grey.animation = setTimeout(grey.animate, 1000);
+	//grey.animation = setTimeout(grey.animate, 1000);
+	window.anim(grey.animate);
 	
-	var white = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "white");
-	white.animation = setTimeout(white.animate, 1000);
+	//var white = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "white");
+	//white.animation = setTimeout(white.animate, 1000);
 })
 
 var animateRect = function(myRectangle, canvas, context, startTime, color) {
@@ -30,7 +31,7 @@ var animateRect = function(myRectangle, canvas, context, startTime, color) {
 	
 	this.animate = function() {
 		time = (new Date()).getTime() - startTime;
-
+		console.log(color);
 		linearSpeed = 100;
 		// pixels / second
 		newX = linearSpeed * time / 1000;
@@ -48,3 +49,11 @@ var animateRect = function(myRectangle, canvas, context, startTime, color) {
 		context.fill();
 	};
 };
+
+window.anim = (function(callback) {
+	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+	function(callback) {
+		console.log("a");
+		window.setTimeout(callback, 1000 / 60);
+	};
+})();
