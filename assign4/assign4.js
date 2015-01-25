@@ -1,59 +1,53 @@
 $(function() {
-	var canvas = document.getElementById('beautifulCanvas');
-	var context = canvas.getContext('2d');
+	window.canvas = new fabric.Canvas('beautifulCanvas');
+	var technicolor = "Technicolor";
+	colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+	
+	var q = 3;
+	var z = 200;
+	for(var i = 0; i < technicolor.length; i++) {
+		canvas.add(
+			new fabric.Text(technicolor[i], {
+				left: z,
+				top: 140,
+				fill: colors[q++]
+			})
+		);
+		q = q > colors.length-1 ? 0 : q;
+		z += 20;
+	}
+	
 
-	var newRect = function() {
-		return {
-			x: 0,
-			y: 75,
-			width: 100,
-			height: 50
-		}
+	
+	function newRect(color) {
+		return new fabric.Rect({
+			left: 0,
+			top: 0,
+			width: 50,
+			height: 400,
+			fill: color
+		});
 	};
 	
-	var black = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "black");
-	black.animation = setTimeout(black.animate, 1000);
+	i = 0;
+	setInterval(function() {
+		rectMoving(canvas, newRect(colors[i++]), fabric.util.ease.easeOutExpo, 2500);
+		i = i > colors.length ? 0 : i;
+	}, 1000);
 	
-	var grey = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "grey");
-	//grey.animation = setTimeout(grey.animate, 1000);
-	window.anim(grey.animate);
-	
-	//var white = new animateRect(newRect(), canvas, context, (new Date()).getTime(), "white");
-	//white.animation = setTimeout(white.animate, 1000);
-})
+	q = 5;
+	setInterval(function() {
+		rectMoving(canvas, newRect(colors[q++]), fabric.util.ease.easeInExpo, 3000);
+		q = q > colors.length ? 0 : q;
+	}, 1000);
+});
 
-var animateRect = function(myRectangle, canvas, context, startTime, color) {
-	var rect = myRectangle;
-	var canvas = canvas;
-	var context = context;
-	var startTime = startTime;
-	var color = color;
-	
-	this.animate = function() {
-		time = (new Date()).getTime() - startTime;
-		console.log(color);
-		linearSpeed = 100;
-		// pixels / second
-		newX = linearSpeed * time / 1000;
-		
-		if(newX < canvas.width - rect.width - rect.borderWidth / 2) {
-			rect.x = newX;
-		}
-
-		// clear
-		context.clearRect(0, 0, canvas.width, canvas.height);
-
-		context.beginPath();
-		context.rect(rect.x, rect.y, rect.width, rect.height);
-		context.fillStyle = color;
-		context.fill();
-	};
+function rectMoving(canvas, rekt, easing, duration) {
+	canvas.add(rekt);
+	rekt.animate('left', '600', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: duration,
+		easing: easing
+	});
+	setTimeout(function() { canvas.remove(rekt) }, duration);
 };
-
-window.anim = (function(callback) {
-	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-	function(callback) {
-		console.log("a");
-		window.setTimeout(callback, 1000 / 60);
-	};
-})();
