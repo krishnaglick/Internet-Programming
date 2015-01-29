@@ -1,5 +1,5 @@
 <?php 
-	$hostname="n00728069@cop4813.unf.edu";
+	$hostname="cop4813.unf.edu";
 	$username="n00728069"; //write your username
 	$password="copn00728069"; //write your password
 	$db_name=""; //write your db name
