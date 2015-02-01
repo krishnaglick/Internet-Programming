@@ -1,10 +1,12 @@
 $(function() {
 	window.home_view_model = new HomeViewModel();
 
-	ko.applyBindings(home_view_model, $('.title')[0]);
+	ko.applyBindings(home_view_model, $('title')[0]);
 
 	SemanticSetup();
 	NavigationSetup();
+
+	$('a.item.assign1').click();
 })
 
 function SemanticSetup() {
@@ -23,7 +25,7 @@ function NavigationSetup() {
 			$('.assignmentSpace').html('');
 		}
 
-		home_view_model.pageRoute($(this).find('span').val());
+		home_view_model.pageRoute($(this).find('span').text());
 
 
 		$('.ui.dropdown.item a i:not(".home")').addClass('thin');
