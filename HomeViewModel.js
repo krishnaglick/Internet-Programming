@@ -1,3 +1,6 @@
 function HomeViewModel() {
-	this.pageTitle = ko.observable('COP 4813: Internet Programming: Home');
+	this.pageRoute = ko.observable('Home');
+	this.pageTitle = ko.computed(function() {
+		return 'COP 4813: Internet Programming: ' + this.pageRoute;
+	});
 }

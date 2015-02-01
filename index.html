@@ -6,7 +6,8 @@
 		<script src="HomeViewModel.js" type="text/javascript"></script>
 		<script src="HomeViewController.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.7.3/semantic.css" />
-		<title data-bind="value: pageTitle"></title>
+		<link rel="stylesheet" href="style.css" />
+		<title data-bind="text: pageTitle"></title>
 	</head>
 	<body>
 		<div class="ui top attached inverted menu">
@@ -16,30 +17,30 @@
 				</div>
 				<i class="dropdown icon"></i>
 				<div class="menu">
-					<a class="item home">
+					<a class="item home" data-route="">
 						<i class="home icon"></i>
 						<span>Home</span>
 					</a>
 
 					<div class="header">Assignments</div>
 
-					<a class="item assign1">
+					<a class="item assign1" data-route="assign1/index.html">
 						<i class="circle thin icon"></i>
 						<span>Assignment 1</span>
 					</a>
-					<a class="item assign2">
+					<a class="item assign2" data-route="assign2/index.html">
 						<i class="circle thin icon"></i>
 						<span>Assignment 2</span>
 					</a>
-					<a class="item assign3">
+					<a class="item assign3" data-route="assign3/index.html">
 						<i class="circle thin icon"></i>
 						<span>Assignment 3</span>
 					</a>
-					<a class="item assign4">
+					<a class="item assign4" data-route="assign4/index.html">
 						<i class="circle thin icon"></i>
 						<span>Assignment 4</span>
 					</a>
-					<a class="item assign5">
+					<a class="item assign5" data-route="assign5/index.html">
 						<i class="thin circle icon"></i>
 						<span>Assignment 5</span>
 					</a>

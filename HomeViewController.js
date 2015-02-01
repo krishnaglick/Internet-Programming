@@ -13,10 +13,17 @@ function SemanticSetup() {
 
 function NavigationSetup() {
 	$('.ui.dropdown.item a').click(function() {
-		var assignmentToLoad = $(this).attr('class').split(' ')[1] + '/index2.html';
-		$('.assignmentSpace').load(assignmentToLoad);
+		//debugger;
+		var assignmentToLoad = $(this).data('route');
 
-		home_view_model.pageTitle('COP 4813: Internet Programming: ' + $(this).find('span').val());
+		if(assignmentToLoad != '') {
+			$('.assignmentSpace').load(assignmentToLoad);
+		}
+		else {
+			$('.assignmentSpace').html('');
+		}
+
+		home_view_model.pageRoute($(this).find('span').val());
 
 
 		$('.ui.dropdown.item a i:not(".home")').addClass('thin');
