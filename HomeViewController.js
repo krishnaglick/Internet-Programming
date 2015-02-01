@@ -3,10 +3,13 @@ $(function() {
 
 	ko.applyBindings(home_view_model, $('title')[0]);
 
-	SemanticSetup();
-	NavigationSetup();
+	$('.navigationContent').load('NavigationContent.html', function() {
+		SemanticSetup();
+		NavigationSetup();
 
-	$('a.item.assign1').click();
+		$('a.item.home').click();
+		//$('a.item.assign1').click();
+	})
 })
 
 function SemanticSetup() {

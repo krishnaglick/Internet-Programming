@@ -1,6 +1,6 @@
 body
 {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 hr
@@ -10,7 +10,12 @@ hr
 
 .self
 {
-	margin-top: 10px;
 	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 	border-radius: 15px;
+	width: 288px;
+	height: 230px;
+}
+a > h3
+{
+	cursor: pointer;
 }
