@@ -1,3 +1,11 @@
+$(function() {
+	window.job_application_view_model = new JobApplicationViewModel();
+
+	ko.applyBindings(job_application_view_model, $('.assignmentSpace')[0]);
+
+	$('.ui.checkbox').checkbox();
+})
+
 function Submit() {
 	var errorMessage = "";
 	if(firstName.value == "") {
@@ -49,4 +57,8 @@ function Reset() {
 	sexFemale.checked = false;
 	firstName.value = "";
 	lastName.value = "";
+}
+
+function showFlowChart() {
+	$('.flowchart').slideToggle();
 }
