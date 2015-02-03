@@ -1,7 +1,7 @@
 $(function() {
 	window.canvas = new fabric.Canvas('beautifulCanvas');
 	var technicolor = "Technicolor";
-	colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+	var colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
 	
 	var q = 3;
 	var z = 200;
@@ -17,8 +17,6 @@ $(function() {
 		z += 20;
 	}
 	
-
-	
 	function newRect(color) {
 		return new fabric.Rect({
 			left: 0,
@@ -30,16 +28,17 @@ $(function() {
 	};
 	
 	i = 0;
-	setInterval(function() {
+	window.intervalObjects.movingRectanglesOne = setInterval(function() {
 		rectMoving(canvas, newRect(colors[i++]), fabric.util.ease.easeOutExpo, 2500);
 		i = i > colors.length ? 0 : i;
 	}, 1000);
 	
-	q = 5;
+	//Commented because it made things laggy
+	/*q = 5;
 	setInterval(function() {
 		rectMoving(canvas, newRect(colors[q++]), fabric.util.ease.easeInExpo, 3000);
 		q = q > colors.length ? 0 : q;
-	}, 1000);
+	}, 1000);*/
 });
 
 function rectMoving(canvas, rekt, easing, duration) {
