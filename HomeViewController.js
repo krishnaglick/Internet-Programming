@@ -8,18 +8,20 @@ $(function() {
 		NavigationSetup();
 
 		$('a.item.home').click();
-		//$('a.item.assign1').click();
-	})
+	});
 })
 
 function SemanticSetup() {
-	$('.dropdown').dropdown();
+	$('.ui.dropdown.item').dropdown();
 }
 
 function NavigationSetup() {
 	$('.ui.dropdown.item a').click(function() {
-		//debugger;
 		var assignmentToLoad = $(this).data('route');
+
+		if(!!ko.dataFor($('.assignmentSpace')[0])) {
+			ko.cleanNode($('.assignmentSpace')[0]);
+		}
 
 		if(assignmentToLoad != '') {
 			$('.assignmentSpace').load(assignmentToLoad);
@@ -29,7 +31,6 @@ function NavigationSetup() {
 		}
 
 		home_view_model.pageRoute($(this).find('span').text());
-
 
 		$('.ui.dropdown.item a i:not(".home")').addClass('thin');
 		$(this).find('i').removeClass('thin');

@@ -1,16 +1,22 @@
 <div class="ui centered grid">
 	<div class="eight wide column">
 		<div class="ui form">
+			<div class="ui message hidden">
+				<div class="header" data-bind="text: alertTitle"></div>
+				<p data-bind="html: alertMessage"></p>
+				<i class="close icon" onclick="$('.ui.message').hide();"></i>
+			</div>
+
 			<h2 class="ui dividing header">Employment Application</h2>
 
 				<div class="field">
 					<label>Name</label>
 					<div class="two fields">
 						<div class="required field">
-							<input type="text" class="ui input" data-bind="firstName" placeholder="First Name">
+							<input type="text" name="firstName" class="ui input" data-bind="textInput: firstName" placeholder="First Name">
 						</div>
 						<div class="required field">
-							<input type="text" class="ui input" data-bind="lastName" placeholder="Last Name">
+							<input type="text" name="lastName" class="ui input" data-bind="textInput: lastName" placeholder="Last Name">
 						</div>
 					</div>
 				</div>
@@ -19,7 +25,7 @@
 					<label>Gender</label>
 					Male
 					<div class="ui slider checkbox">
-						<input type="checkbox" data-bind="checked: gender">
+						<input type="checkbox">
 						<label></label>
 					</div>
 					Female
@@ -55,23 +61,35 @@
 				<div class="field">
 					<label>Prefered Time of Day</label>
 					<div class="field">
-						<select class="ui selection dropdown" data-bind="options: timeOfDay, value: prefTimeOfDay"></select>
+						<div class="ui selection dropdown">
+							<input type="hidden" data-bind="value: prefTimeOfDay" />
+							<div class="default text">Time of Day</div>
+							<i class="dropdown icon"></i>
+							<div class="menu" data-bind="foreach: timeOfDay">
+								<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 
 			<div class="field">
 				<div class="ui buttons">
-					<div class="ui blue button" onclick="Submit()">
+					<div class="ui blue button" data-bind="click: submit">
 						Submit
 					</div>
-					<div class="ui black button" onclick="Reset()">
+					<div class="ui black button" data-bind="click: reset">
 						Reset
 					</div>
 				</div>
+			</div>
+
+			<div class="field">
+				<h4 onclick="showFlowChart()">Flowchart</h4>
+				<img src="assign2/flowchart.jpg" class="flowchart" style="display: none;" />
 			</div>
 		</div>
 	</div>
 </div>
 
-<div data-scriptResource="assign2/JobApplicationViewModel.js"></div>
-<div data-scriptResource="assign2/JobApplicationController.js"></div>
+<script type="text/javascript" src="assign2/JobApplicationViewModel.js"></script>
+<script type="text/javascript" src="assign2/JobApplicationController.js"></script>

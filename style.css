@@ -19,3 +19,7 @@ a > h3
 {
 	cursor: pointer;
 }
+hidden
+{
+	display: none;
+}
