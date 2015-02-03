@@ -1,0 +1,49 @@
+<div class="ui centered grid">
+	<div class="row">
+		<div class="three wide column"></div>
+		<div class="twelve wide column">
+			<h3>Math Magic | <a href="assign3/jasmine_tests/SpecRunner.html" target="_blank">Unit Tests</a></h3>
+			<textarea class="ui input" style="resize: none;" rows="4" cols="50" placeholder="Please enter in a comma delimited list of numbers" data-bind="textInput: numberList" autofocus></textarea>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="three wide column"></div>
+		<div class="five wide column">
+			Mean: <span data-bind="text: mean"></span>
+		</div>
+		<div class="five wide column">
+			Median: <span data-bind="text: median"></span>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="three wide column"></div>
+		<div class="five wide column">
+			Mode: <span data-bind="text: mode"></span>
+		</div>
+		<div class="five wide column">
+			Total: <span data-bind="text: sum"></span>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="three wide column"></div>
+		<div class="five wide column">
+			Standard Deviation: <span data-bind="text: standardDeviation"></span>
+		</div>
+		<div class="five wide column">
+			Variance: <span data-bind="text: variance"></span>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="three wide column"></div>
+		<div class="five wide column">
+			Sorted List: <span data-bind="text: numberListSorted"></span>
+		</div>
+	</div>
+</div>
+
+<script src="assign3/StatisticsViewModel.js" type="text/javascript"></script>
+<script src="assign3/StatisticsViewController.js" type="text/javascript"></script>

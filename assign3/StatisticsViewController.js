@@ -1,5 +1,5 @@
 $(function() {
 	stats_view_model = new StatisticsViewModel();
 	
-	ko.applyBindings(stats_view_model, $('grid')[0]);
+	ko.applyBindings(stats_view_model, $('.assignmentSpace')[0]);
 })
