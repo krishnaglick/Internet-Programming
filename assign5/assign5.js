@@ -2,7 +2,7 @@ $(function() {
 	$.ajax({
 		type: "POST",
 		dataType: "json",
-		url: "index.php",
+		url: "assign5/index.php",
 		data: {
 				'action' : 'test',
 				'thing2' : 'asdf'
