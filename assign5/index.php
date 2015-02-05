@@ -1,18 +1,22 @@
 <?php
-	if (is_ajax()) {
-		if (isset($_POST["action"]) && !empty($_POST["action"])) { //Checks if action value exists
-			//echo "true";
+	include 'db.php';
+
+	if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+		if (isset($_POST["action"]) && !empty($_POST["action"])) {
 			$action = $_POST["action"];
-			switch($action) { //Switch case for value of action
+			switch($action) {
+				case "register": register(); break;
+				case "login": login(); break;
+				case "logout": logout(); break;
+				case "saveStocks": saveStocks(); break;
+				case "loadStocks": loadStocks(); break;
 				case "test": test_function(); break;
-				default: echo $action; break;
+				default: echo "Bad Action!"; break;
 			}
 		}
 	}
-	//Function to check if the request is an AJAX request
-	function is_ajax() {
-		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
+
+
 	function test_function(){
 		$return = $_POST["thing2"];
 		//echo $return;
@@ -23,7 +27,42 @@
 		//$return["favorite_restaurant"] = "McDonald's";
 		//$return["json"] = json_encode($return);
 		//echo "potato";
-		//echo json_encode($return); 
+		//echo json_encode($return);
+		http_response_code(409); //User exists
 		echo json_encode('{"thing" : "lol", "thing2" : "' . $return . '"}');
+	}
+
+	function register() {
+		$db = getDB();
+		$query = "SELECT User_ID FROM Users WHERE Username=?";
+		$statement = $db->prepare($query;
+		$statement->bindValue(1, $_POST["username"]);
+		$statement->execute();
+	    while(($row = $stmt->fetch()) != false) {
+	        echo $row . "\n";
+	    }
+		http_response_code(409); //User exists
+		http_response_code(201); //User is created
+	}
+
+	function login() {
+
+		http_response_code(406); //Bad input data
+		http_response_code(200); //Things are okay
+
+	}
+
+	function logout() {
+		http_response_code(200); //Things are okay
+	}
+
+	function saveStocks() {
+		http_response_code(401); //Unauthorized
+		http_response_code(200); //Things are okay
+	}
+
+	function loadStocks() {
+		http_response_code(401); //Unauthorized
+		http_response_code(200); //Things are okay
 	}
 ?> 

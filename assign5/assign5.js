@@ -1,4 +1,8 @@
 $(function() {
+	test();
+})
+
+function test() {
 	$.ajax({
 		type: "POST",
 		dataType: "json",
@@ -19,4 +23,4 @@ $(function() {
 			console.log('done');
 		}
 	});
-})
+}
