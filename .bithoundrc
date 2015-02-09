@@ -1,6 +1,6 @@
 {
 	"ignore": [
-		"**/jasmine.js"
-		"assets/*"
+		"**/jasmine_tests/**"
+		"assets/**"
 	]
 }
