@@ -9,4 +9,9 @@
 		$statement->execute();*/
 		return $db;
 	}
+
+	$queries = array[
+			register => "INSERT INTO Users (Username, Password) VALUES (:username, :password)",
+			login => ""
+		];
  ?>

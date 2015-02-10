@@ -1,6 +1,8 @@
 <?php
 	include 'db.php';
 
+	$db = getDB();
+
 	if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		if (isset($_POST["action"]) && !empty($_POST["action"])) {
 			$action = $_POST["action"];
@@ -33,20 +35,20 @@
 	}
 
 	function register() {
-		$db = getDB();
-		$query = "SELECT User_ID FROM Users WHERE Username=?";
-		$statement = $db->prepare($query;
-		$statement->bindValue(1, $_POST["username"]);
-		$statement->execute();
-	    while(($row = $stmt->fetch()) != false) {
-	        echo $row . "\n";
-	    }
-		http_response_code(409); //User exists
-		http_response_code(201); //User is created
+		$statement = $db->prepare($queries["register"]);
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->bindParam(':password', $_POST["password"]);
+		if($statement->execute()) {
+			http_response_code(201); //User is created
+			//login action
+		}
+		else {
+			http_response_code(409); //User exists
+			//failure action
+		}
 	}
 
 	function login() {
-
 		http_response_code(406); //Bad input data
 		http_response_code(200); //Things are okay
 
