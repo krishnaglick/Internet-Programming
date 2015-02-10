@@ -12,6 +12,6 @@
 
 	$queries = array[
 			register => "INSERT INTO Users (Username, Password) VALUES (:username, :password)",
-			login => ""
+			login => "SELECT * FROM Users WHERE Username = :username AND Password = :password"
 		];
  ?>
