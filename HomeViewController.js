@@ -2,6 +2,7 @@ $(function() {
 	window.home_view_model = new HomeViewModel();
 
 	ko.applyBindings(home_view_model, $('title')[0]);
+	ko.applyBindings(home_view_model, $('.right.menu')[0]);
 
 	window.intervalObjects = {};
 
