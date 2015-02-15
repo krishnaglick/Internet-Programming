@@ -58,13 +58,13 @@ JobApplicationViewModel.prototype.submit = function() {
 	if(error != '') {
 		self.alertTitle('Please fill in required field(s)');
 		self.alertMessage(error);
-		$('.ui.message').show();
+		$('#jobAppMessage').show();
 		return;
 	}
 	else {
 		self.alertTitle('Application Submitted');
 		self.alertMessage('Your application has been submitted');
-		$('.ui.message').show();
+		$('#jobAppMessage').show();
 		self.reset();
 	}
 }

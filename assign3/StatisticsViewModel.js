@@ -82,7 +82,7 @@ StatisticsViewModel = function() {
 		if(biggestKey == 0)
 			return "N/A";
 		
-		return parseInt(biggestKey).toFixed(2);
+		return parseFloat(biggestKey).toFixed(2);
 	});
 	
 	

@@ -8,8 +8,7 @@ $(function() {
 		SubscriptionSetup();
 		
 		ko.applyBindings(home_view_model, $('title')[0]);
-		ko.applyBindings(home_view_model, $('.right.menu')[0]);
-		ko.applyBindings(home_view_model, $('#errorMessage')[0]);
+		ko.applyBindings(home_view_model, $('.navigationContent')[0]);
 
 		$('a.item.home').click();
 	});
@@ -17,6 +16,22 @@ $(function() {
 
 function SemanticSetup() {
 	$('.ui.dropdown.item').dropdown();
+
+	$('#navLogin').click(function() {
+		$('#loginModal').modal({
+			onHidden: function() {
+				home_view_model.password('');
+			}
+		}).modal('show');
+	});
+
+	$('#navRegister').click(function() {
+		$('#registerModal').modal({
+			onHidden: function() {
+				home_view_model.password('');
+			}
+		}).modal('show');
+	});
 }
 
 function NavigationSetup() {

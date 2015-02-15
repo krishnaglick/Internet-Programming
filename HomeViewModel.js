@@ -3,6 +3,8 @@ function HomeViewModel() {
 
 	this.username = ko.observable('');
 	this.password = ko.observable('');
+	this.authTicket = ko.observable('');
+
 	this.ajaxHeaderMessage = ko.observable('');
 	this.ajaxBodyMessage = ko.observable('');
 
@@ -16,35 +18,113 @@ function HomeViewModel() {
 }
 
 HomeViewModel.prototype.login = function() {
+	if(this.username() == '' || this.password() == '') {
+		return;
+	}
+
 	var that = this;
-	this.ajaxRoute = "test";
+	this.ajaxRoute = "login";
 
 	$.ajax({
 		type: "POST",
-		dataType: "json",
-		url: "assign5/StockPortfolioController.php",
-		data: JSON.stringify(this),
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "LoginController.php",
+		data: ko.toJSON(this),
 		success: function(data) {
-			this.messageType = true;
-			this.ajaxHeaderMessage('Success!');
-			this.ajaxBodyMessage('Login was successful');
+			that.messageType = true;
+			that.ajaxHeaderMessage('Success!');
+			that.ajaxBodyMessage('Login was successful');
+			that.authTicket(data.authTicket);
 		},
-		failure: function(data) {
-			this.messageType = false;
-			this.ajaxHeaderMessage('Failure');
-			this.ajaxBodyMessage('Username or Password was incorrect');
+		error: function() {
+			that.messageType = false;
+			that.ajaxHeaderMessage('Failure');
+			that.ajaxBodyMessage('Username or Password was incorrect');
+			that.username('');
 		},
 		complete: function(data) {
-			that.password('');
-			console.log(data);
+			if('responseJSON' in data && typeof data.responseJSON == "object") {
+				if('error' in data.responseJSON) {
+					that.messageType = false;
+					that.ajaxHeaderMessage('Error');
+					that.ajaxBodyMessage(data.responseJSON.error);
+					that.username('');
+				}
+			}
 		}
 	});
 }
 
 HomeViewModel.prototype.register = function() {
+	if(this.username() == '' || this.password() == '') {
+		return;
+	}
 
+	var that = this;
+	this.ajaxRoute = "register";
+
+	$.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "LoginController.php",
+		data: ko.toJSON(this),
+		success: function(data) {
+			that.messageType = true;
+			that.ajaxHeaderMessage('Success!');
+			that.ajaxBodyMessage('Account was created, you are now logged in!');
+			that.authTicket(data.authTicket);
+		},
+		error: function(data) {
+			that.messageType = false;
+			that.ajaxHeaderMessage('Failure');
+			that.ajaxBodyMessage('Username already exists, please choose a different one');
+			that.username('');
+		},
+		complete: function(data) {
+			if('responseJSON' in data && typeof data.responseJSON == "object") {
+				if('error' in data.responseJSON) {
+					that.messageType = false;
+					that.ajaxHeaderMessage('Error');
+					that.ajaxBodyMessage(data.responseJSON.error);
+					that.username('');
+				}
+			}
+		}
+	});
 }
 
 HomeViewModel.prototype.logout = function() {
-	
+	var that = this;
+	this.ajaxRoute = "logout";
+
+	$.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "LoginController.php",
+		data: ko.toJSON(this),
+		success: function() {
+			that.messageType = true;
+			that.ajaxHeaderMessage('Logged Out');
+			that.ajaxBodyMessage('You were successfully logged out');
+			that.authTicket('');
+			that.username('');
+		},
+		error: function(data) {
+			that.messageType = false;
+			that.ajaxHeaderMessage('Error');
+			that.ajaxBodyMessage('Unknown error, please try again');
+		},
+		complete: function(data) {
+			if('responseJSON' in data && typeof data.responseJSON == "object") {
+				if('error' in data.responseJSON) {
+					that.messageType = false;
+					that.ajaxHeaderMessage('Error');
+					that.ajaxBodyMessage(data.responseJSON.error);
+				}
+			}
+		}
+	});
 }

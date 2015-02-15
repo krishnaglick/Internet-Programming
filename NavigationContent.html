@@ -37,18 +37,23 @@
 	</div>
 
 	<div class="right menu">
-		<div class="item" data-bind="click: login">
-			<i class="sign in icon"></i> Login
-		</div>
-		<div class="item" data-bind="click: register">
-			<i class="child icon"></i> Register
-		</div>
-		<div class="item">
-			<span data-bind="text: username">TestUser</span>
-		</div>
-		<div class="item" data-bind="click: logout">
-			<i class="sign out icon"></i> Logout
-		</div>
+		<span data-bind="visible: authTicket() == ''">
+			<div class="item" id="navLogin">
+				<i class="sign in icon"></i> Login
+			</div>
+			<div class="item" id="navRegister">
+				<i class="child icon"></i> Register
+			</div>
+		</span>
+
+		<span data-bind="visible: authTicket() != ''">
+			<div class="item">
+				<span data-bind="text: username"></span>
+			</div>
+			<div class="link item" data-bind="click: logout">
+				<i class="sign out icon"></i> Logout
+			</div>
+		</span>
 	</div>
 </div>
 
@@ -56,4 +61,42 @@
 	<i class="close icon" data-bind="click: function() { ajaxBodyMessage('') }"></i>
 	<div class="header" data-bind="text: ajaxHeaderMessage"></div>
 	<p data-bind="text: ajaxBodyMessage"></p>
+</div>
+
+<div class="ui small modal" id="loginModal">
+	<i class="close icon"></i>
+	<div class="header">
+		Login
+	</div>
+	<div class="content">
+		<div class="ui small input">
+			<input placeholder="Username" name="username" type="text" data-bind="textInput: username">
+		</div>
+		<div class="ui small input">
+			<input placeholder="Password" name="password" type="password" data-bind="textInput: password">
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui button" data-bind="click: login">Login</div>
+		<div class="ui button">Cancel</div>
+	</div>
+</div>
+
+<div class="ui small modal" id="registerModal">
+	<i class="close icon"></i>
+	<div class="header">
+		Register
+	</div>
+	<div class="content">
+		<div class="ui small input">
+			<input placeholder="Username" name="username" type="text" data-bind="textInput: username">
+		</div>
+		<div class="ui small input">
+			<input placeholder="Password" name="password" type="password" data-bind="textInput: password">
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui button" data-bind="click: register">Register</div>
+		<div class="ui button">Cancel</div>
+	</div>
 </div>
