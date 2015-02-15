@@ -48,5 +48,5 @@ function rectMoving(canvas, rekt, easing, duration) {
 		duration: duration,
 		easing: easing
 	});
-	setTimeout(function() { canvas.remove(rekt) }, duration);
-};
+	setTimeout(function() { canvas.remove(rekt); }, duration);
+}

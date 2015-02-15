@@ -25,7 +25,6 @@
 		}
 		else {
 			http_response_code(500); //DB Error
-			echo json_encode(["error" => "Oops! There was an error communicating with the database."]);
 			Exit();
 		}
 	}
@@ -68,11 +67,9 @@
 
 		if($statement->rowCount() > 0) {
 			http_response_code(200); //Things are okay
-			echo json_encode("");
 		}
 		else {
 			http_response_code(500); //DB Error
-			echo json_encode(["error" => "Oops! Looks like you're already logged out."]);
 		}
 	}
 ?>

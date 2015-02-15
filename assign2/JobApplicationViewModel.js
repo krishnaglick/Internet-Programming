@@ -43,16 +43,16 @@ JobApplicationViewModel.prototype.submit = function() {
 	var self = this;
 	var error = '';
 
-	if(self.firstName() == '') {
+	if(self.firstName() === '') {
 		error = "Please enter in a first name!";
 	}
 
-	if(self.lastName() == '') {
-		error += error == '' ? "Please enter in a last name!" : "<br>Please enter in a last name!";
+	if(self.lastName() === '') {
+		error += error === '' ? "Please enter in a last name!" : "<br>Please enter in a last name!";
 	}
 
-	if(self.workDays() == 0){
-		error += error == '' ? "Please choose at least one day you can work!" : "<br>Please choose at least one day you can work!";
+	if(self.workDays() === 0){
+		error += error === '' ? "Please choose at least one day you can work!" : "<br>Please choose at least one day you can work!";
 	}
 
 	if(error != '') {

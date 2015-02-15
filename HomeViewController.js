@@ -44,7 +44,7 @@ function NavigationSetup() {
 			ko.cleanNode($('.assignmentSpace')[0]);
 		}
 
-		if(assignmentToLoad != '') {
+		if(assignmentToLoad !== '') {
 			$('.assignmentSpace').load(assignmentToLoad);
 		}
 		else {
@@ -64,7 +64,7 @@ function cleanUp() {
 	}
 	
 	$.each(window.intervalObjects, function(index, obj) {
-    	if(obj != null) {
+    	if(obj !== null) {
     		clearInterval(obj);
     	}
 	});
@@ -73,7 +73,7 @@ function cleanUp() {
 function SubscriptionSetup() {
 	var that = home_view_model;
 	home_view_model.ajaxBodyMessage.subscribe(function() {
-		if(that.ajaxBodyMessage() != '') {
+		if(that.ajaxBodyMessage() !== '') {
 			if(that.messageType) {
 				$('#errorMessage').addClass('success').removeClass('negative').slideDown();
 			}

@@ -13,6 +13,7 @@
 				'login' => "SELECT * FROM users WHERE Username = :username AND Password = :password",
 				'createTicket' => "INSERT INTO authenticationtickets VALUES (:authTicket, NOW())",
 				'updateTicket' => "UPDATE authenticationtickets SET LastAccessedTime = NOW() WHERE AuthenticationTicket = :authTicket",
+				'validateTicket' => "SELECT LastAccessedTime FROM authenticationtickets WHERE AuthenticationTicket = :authTicket",
 				'deleteTicket' => "DELETE FROM authenticationtickets WHERE AuthenticationTicket = :authTicket"
 			];
 

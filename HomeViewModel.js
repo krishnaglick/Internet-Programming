@@ -18,7 +18,7 @@ function HomeViewModel() {
 }
 
 HomeViewModel.prototype.login = function() {
-	if(this.username() == '' || this.password() == '') {
+	if(this.username() === '' || this.password() === '') {
 		return;
 	}
 
@@ -41,23 +41,15 @@ HomeViewModel.prototype.login = function() {
 			that.messageType = false;
 			that.ajaxHeaderMessage('Failure');
 			that.ajaxBodyMessage('Username or Password was incorrect');
-			that.username('');
 		},
-		complete: function(data) {
-			if('responseJSON' in data && typeof data.responseJSON == "object") {
-				if('error' in data.responseJSON) {
-					that.messageType = false;
-					that.ajaxHeaderMessage('Error');
-					that.ajaxBodyMessage(data.responseJSON.error);
-					that.username('');
-				}
-			}
+		complete: function() {
+			that.password('');
 		}
 	});
 }
 
 HomeViewModel.prototype.register = function() {
-	if(this.username() == '' || this.password() == '') {
+	if(this.username() === '' || this.password() === '') {
 		return;
 	}
 
@@ -76,21 +68,14 @@ HomeViewModel.prototype.register = function() {
 			that.ajaxBodyMessage('Account was created, you are now logged in!');
 			that.authTicket(data.authTicket);
 		},
-		error: function(data) {
+		error: function() {
 			that.messageType = false;
 			that.ajaxHeaderMessage('Failure');
 			that.ajaxBodyMessage('Username already exists, please choose a different one');
 			that.username('');
 		},
-		complete: function(data) {
-			if('responseJSON' in data && typeof data.responseJSON == "object") {
-				if('error' in data.responseJSON) {
-					that.messageType = false;
-					that.ajaxHeaderMessage('Error');
-					that.ajaxBodyMessage(data.responseJSON.error);
-					that.username('');
-				}
-			}
+		complete: function() {
+			that.password('');
 		}
 	});
 }
@@ -112,19 +97,11 @@ HomeViewModel.prototype.logout = function() {
 			that.authTicket('');
 			that.username('');
 		},
-		error: function(data) {
+		error: function() {
 			that.messageType = false;
 			that.ajaxHeaderMessage('Error');
-			that.ajaxBodyMessage('Unknown error, please try again');
+			that.ajaxBodyMessage('Oops! Looks like you\'re already logged out.');
 		},
-		complete: function(data) {
-			if('responseJSON' in data && typeof data.responseJSON == "object") {
-				if('error' in data.responseJSON) {
-					that.messageType = false;
-					that.ajaxHeaderMessage('Error');
-					that.ajaxBodyMessage(data.responseJSON.error);
-				}
-			}
-		}
+		complete: function() {}
 	});
 }

@@ -26,7 +26,7 @@ StatisticsViewModel = function() {
 		that.count = count;
 		var mean = total/that.count;
 		
-		if(mean == 0 || isNaN(mean))
+		if(mean === 0 || isNaN(mean))
 			return "N/A";
 			
 		return mean.toFixed(2);
@@ -39,7 +39,7 @@ StatisticsViewModel = function() {
 			total += val;
 		});
 		
-		if(total == 0 || isNaN(total))
+		if(total === 0 || isNaN(total))
 			return "N/A";
 			
 		return total.toFixed(2);
@@ -49,17 +49,17 @@ StatisticsViewModel = function() {
 		var variance = 0;
 		var i = 0;
 		that.numberListParsed().forEach(function(val) {
-			variance += Math.pow(that.mean()-val, 2)
+			variance += Math.pow(that.mean()-val, 2);
 		});
 		
-		if(variance == 0)
+		if(variance === 0)
 			return "N/A";
 		
 		return (variance / that.count).toFixed(2);
 	});
 	
 	this.numberListSorted = ko.computed(function() {
-		if(that.numberListParsed().length == 0)
+		if(that.numberListParsed().length === 0)
 			return "N/A";
 			
 		return that.numberListParsed().sort(function(a, b) {
@@ -79,7 +79,7 @@ StatisticsViewModel = function() {
 			biggestKey = modeSet[key] > modeSet[biggestKey] && modeSet[key] > 1 ? key : biggestKey;
 		});
 		
-		if(biggestKey == 0)
+		if(biggestKey === 0)
 			return "N/A";
 		
 		return parseFloat(biggestKey).toFixed(2);
@@ -87,11 +87,11 @@ StatisticsViewModel = function() {
 	
 	
 	this.median = ko.computed(function() {
-		if(that.numberListParsed().length == 0)
+		if(that.numberListParsed().length === 0)
 			return "N/A";
 			
 		var median;
-		if(that.count % 2 == 0) {
+		if(that.count % 2 === 0) {
 			var medIndex = that.count / 2;
 			median = (that.numberListSorted()[medIndex] + that.numberListSorted()[medIndex - 1]) / 2;
 		}
