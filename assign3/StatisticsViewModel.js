@@ -1,12 +1,12 @@
 StatisticsViewModel = function() {
-	var self = this;
+	var that = this;
 	this.count = 0;
 	
 	this.numberList = ko.observable("");
 	
 	this.numberListParsed = ko.computed(function() {
 		var numberSet = [];
-		self.numberList().split(',').forEach(function(val) {
+		that.numberList().split(',').forEach(function(val) {
 			val = parseFloat(val);
 			if(!isNaN(val))
 				numberSet.push(val);
@@ -19,12 +19,12 @@ StatisticsViewModel = function() {
 		var total = 0;
 		var count = 0;
 		
-		self.numberListParsed().forEach(function(val) {
+		that.numberListParsed().forEach(function(val) {
 			total += val;
 			count++;
 		});
-		self.count = count;
-		var mean = total/self.count;
+		that.count = count;
+		var mean = total/that.count;
 		
 		if(mean == 0 || isNaN(mean))
 			return "N/A";
@@ -35,7 +35,7 @@ StatisticsViewModel = function() {
 	this.sum = ko.computed(function() {
 		var total = 0;
 		
-		self.numberListParsed().forEach(function(val) {
+		that.numberListParsed().forEach(function(val) {
 			total += val;
 		});
 		
@@ -48,21 +48,21 @@ StatisticsViewModel = function() {
 	this.variance = ko.computed(function() {
 		var variance = 0;
 		var i = 0;
-		self.numberListParsed().forEach(function(val) {
-			variance += Math.pow(self.mean()-val, 2)
+		that.numberListParsed().forEach(function(val) {
+			variance += Math.pow(that.mean()-val, 2)
 		});
 		
 		if(variance == 0)
 			return "N/A";
 		
-		return (variance / self.count).toFixed(2);
+		return (variance / that.count).toFixed(2);
 	});
 	
 	this.numberListSorted = ko.computed(function() {
-		if(self.numberListParsed().length == 0)
+		if(that.numberListParsed().length == 0)
 			return "N/A";
 			
-		return self.numberListParsed().sort(function(a, b) {
+		return that.numberListParsed().sort(function(a, b) {
 			return a - b;
 		});
 	});
@@ -70,7 +70,7 @@ StatisticsViewModel = function() {
 	this.mode = ko.computed(function() {
 		var modeSet = {0: 0};
 		
-		self.numberListParsed().forEach(function(val) {
+		that.numberListParsed().forEach(function(val) {
 			modeSet[val] = typeof modeSet[val] === 'undefined' ? 1 : modeSet[val] + 1;
 		});
 		
@@ -87,23 +87,23 @@ StatisticsViewModel = function() {
 	
 	
 	this.median = ko.computed(function() {
-		if(self.numberListParsed().length == 0)
+		if(that.numberListParsed().length == 0)
 			return "N/A";
 			
 		var median;
-		if(self.count % 2 == 0) {
-			var medIndex = self.count / 2;
-			median = (self.numberListSorted()[medIndex] + self.numberListSorted()[medIndex - 1]) / 2;
+		if(that.count % 2 == 0) {
+			var medIndex = that.count / 2;
+			median = (that.numberListSorted()[medIndex] + that.numberListSorted()[medIndex - 1]) / 2;
 		}
 		else {
-			median = self.numberListSorted()[Math.floor(self.count / 2)];
+			median = that.numberListSorted()[Math.floor(that.count / 2)];
 		}
 		
 		return median.toFixed(2);
 	});
 	
 	this.standardDeviation = ko.computed(function() {
-		var stdDev = Math.sqrt(self.variance());
+		var stdDev = Math.sqrt(that.variance());
 		return isNaN(stdDev) ? "N/A" : stdDev.toFixed(2);
 	});
 }

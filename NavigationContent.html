@@ -51,3 +51,9 @@
 		</div>
 	</div>
 </div>
+
+<div id="errorMessage" class="hidden ui floating message">
+	<i class="close icon" data-bind="click: function() { ajaxBodyMessage('') }"></i>
+	<div class="header" data-bind="text: ajaxHeaderMessage"></div>
+	<p data-bind="text: ajaxBodyMessage"></p>
+</div>

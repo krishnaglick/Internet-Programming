@@ -5,7 +5,7 @@
 
 	if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		if (isset($_POST["action"]) && !empty($_POST["action"])) {
-			$action = $_POST["action"];
+			$action = $_POST["ajaxRoute"];
 			switch($action) {
 				case "register": register(); break;
 				case "login": login(); break;
@@ -18,40 +18,53 @@
 		}
 	}
 
+	function test_function() {
+		http_response_code(500); //DB error
+		echo json_encode($_POST);
+	}
 
-	function test_function(){
-		$return = $_POST["thing2"];
-		//echo $return;
-		//Do what you need to do with the info. The following are some examples.
-		//if ($return["favorite_beverage"] == ""){
-		// $return["favorite_beverage"] = "Coke";
-		//}
-		//$return["favorite_restaurant"] = "McDonald's";
-		//$return["json"] = json_encode($return);
-		//echo "potato";
-		//echo json_encode($return);
-		http_response_code(409); //User exists
-		echo json_encode('{"thing" : "lol", "thing2" : "' . $return . '"}');
+	function generateAuthToken() {
+		$guid = com_create_guid();
+		$statement = $db->prepare($queries["createGuid"]);
+		$statement->bindParam(':authTicket', $guid);
+		if($statement->execute()) {
+			http_response_code(200); //Things are okay
+			return [guid => $guid];
+		}
+		else {
+			http_response_code(500); //DB Error
+			return [error => "Oops! There was an error communicating with the database."];
+		}
 	}
 
 	function register() {
 		$statement = $db->prepare($queries["register"]);
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->bindParam(':password', $_POST["password"]);
+
 		if($statement->execute()) {
+			echo json_encode(generateAuthToken());
 			http_response_code(201); //User is created
-			//login action
 		}
 		else {
-			http_response_code(409); //User exists
 			//failure action
+			http_response_code(409); //User exists
 		}
 	}
 
 	function login() {
-		http_response_code(406); //Bad input data
-		http_response_code(200); //Things are okay
+		$statement = $db->prepare($queries["login"]);
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->bindParam(':password', $_POST["password"]);
 
+		if($statement->execute()) {
+			http_response_code(200); //Things are okay
+			echo json_encode(generateAuthToken());
+		}
+		else {
+			http_response_code(406); //Bad input data
+			echo "";
+		}
 	}
 
 	function logout() {

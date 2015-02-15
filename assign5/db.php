@@ -4,15 +4,13 @@
 		$db = new PDO('mysql:host=localhost;dbname=n00728069;charset=utf8', 'root', 'root');
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-		/*$statement = $db->prepare("SELECT User_ID FROM Users WHERE Username=? AND Password=?");
-		$statement->bindValue(1, $username);
-		$statement->bindValue(2, $password);
-		$statement->execute();*/
 		return $db;
 	}
 
-	$queries = array[
-			register => "INSERT INTO Users (Username, Password) VALUES (:username, :password)",
-			login => "SELECT * FROM Users WHERE Username = :username AND Password = :password"
+	$queries = [
+			'register' => "INSERT INTO users (Username, Password) VALUES (:username, :password)",
+			'login' => "SELECT * FROM users WHERE Username = :username AND Password = :password",
+			'createTicket' => "INSERT INTO authenticationtickets VALUES (:authTicket)",
+			'updateTicket' => "UPDATE authenticationtickets SET LastAccessedTime = NOW() WHERE AuthenticationTicket = :authTicket"
 		];
  ?>
