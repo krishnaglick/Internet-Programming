@@ -1,26 +1,17 @@
 $(function() {
 	window.stock_portfolio_view_model = new StockPortfolioViewModel();
-})
 
-function test() {
-	$.ajax({
-		type: "POST",
-		dataType: "json",
-		url: "assign5/index.php",
-		data: {
-				'action' : 'test',
-				'thing2' : 'asdf'
-		},
-		success: function(data) {
-			console.log(JSON.parse(data));
-			console.log('s');
-		},
-		failure: function(data) {
-			console.log(data);
-			console.log('f');
-		},
-		complete: function() {
-			console.log('done');
-		}
+	ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
+
+	$('.ui.vertical.menu > a').click(function() {
+		$('.ui.vertical.menu > a').removeClass('active');
+		$(this).addClass('active');
+		menuSelection($(this).data('selection'))
 	});
-}
+
+	function menuSelection(option) {
+		$('#myPortfolio, #buySell, #statistics').slideUp(function() {
+			$(option).slideDown();
+		});
+	}
+})
