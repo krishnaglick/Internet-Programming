@@ -10,8 +10,23 @@ $(function() {
 	});
 
 	function menuSelection(option) {
-		$('#myPortfolio, #buySell, #statistics').slideUp(function() {
-			$(option).slideDown();
-		});
+		$('#myPortfolio, #buySell, #statistics').transition('fade left');
+
+		/*.hide('slide', {
+				direction: 'right',
+				easing: 'linear'
+			},
+			800,
+			function() {
+				$(option).show('slide', {
+						direction: 'left',
+						easing: 'linear'
+					},
+					800
+				);
+			}
+		);*/
 	}
+
+	$('#myPortfolio').click();
 })

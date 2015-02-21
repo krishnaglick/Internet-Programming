@@ -1,7 +1,7 @@
-<div class="ui green vertical segment">
+<div class="ui green vertical segment" style="min-height: 400px">
 	<div class="ui grid">
 		<div class="two wide column">
-			<div class="ui horizontal segment">
+			<div class="ui horizontal segment" style="position: fixed">
 				<div class="ui vertical menu" id="stockPortfolioMenu">
 					<div class="item"></div>
 					<a class="active green item" data-selection="#myPortfolio">
@@ -18,7 +18,7 @@
 			</div>
 		</div>
 
-		<div class="twelve wide column" id="myPortfolio">
+		<div class="twelve wide column" id="myPortfolio" style="display: none">
 			<div class="ui horizontal segment">
 				<div class="ui grid">
 					<div class="three wide column">
@@ -32,13 +32,13 @@
 						</div>
 					</div>
 					<div class="eleven wide column">
-						<!-- <div id="myStocksChart" style="width:100%; height:400px;"></div> -->
+						<div id="myStocksChart" style="width:100%; height:400px;"></div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="twelve wide column" id="buySell" style="display: none">
+		<div class="twelve wide column" id="buySell">
 			<div class="ui horizontal segment">
 				<div class="ui stackable eight column grid" data-bind="foreach: stocksList">
 					<div class="column">
