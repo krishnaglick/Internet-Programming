@@ -90,18 +90,12 @@ HomeViewModel.prototype.logout = function() {
 		contentType: "application/json",
 		url: "LoginController.php",
 		data: ko.toJSON(this),
-		success: function() {
+		complete: function() {
 			that.messageType = true;
 			that.ajaxHeaderMessage('Logged Out');
 			that.ajaxBodyMessage('You were successfully logged out');
 			that.authTicket('');
 			that.username('');
-		},
-		error: function() {
-			that.messageType = false;
-			that.ajaxHeaderMessage('Error');
-			that.ajaxBodyMessage('Oops! Looks like you\'re already logged out.');
-		},
-		complete: function() {}
+		}
 	});
 }

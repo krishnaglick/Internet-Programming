@@ -56,9 +56,18 @@ function NavigationSetup() {
 		$('.ui.dropdown.item a i:not(".home")').addClass('thin');
 		$(this).find('i').removeClass('thin');
 	});
+
+	$('#loginModal input, #registerModal input').keydown(function(e) {
+		if(e.keyCode == 13) { //Enter
+			//This is probably bad
+			if(home_view_model.username() !== '' home_view_model.password() !== '') {
+				$(this).closest('.ui.small.modal').find('.ui.primary.button').click();
+			}
+		}
+	})
 }
 
-function cleanUp() {
+function cleanUp() om{
 	if(typeof window.canvas != 'undefined') {
 		window.canvas.clear();
 	}
