@@ -23,12 +23,13 @@
 				<div class="ui grid">
 					<div class="three wide column">
 						<div class="ui basic segment">
-							<span data-bind="foreach: myStocks">
+							<!-- <span data-bind="foreach: myStocks">
 								<div class="ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}">
 									<span data-bind="text: name"></span>
 									<i class="external share icon"></i>
 								</div>
-							</span>
+							</span> -->
+							Placeholder
 						</div>
 					</div>
 					<div class="eleven wide column">
@@ -38,12 +39,25 @@
 			</div>
 		</div>
 
-		<div class="twelve wide column" id="buySell">
+		<div class="twelve wide column" id="buySell" style="display: none">
 			<div class="ui horizontal segment">
-				<div class="ui stackable eight column grid" data-bind="foreach: stocksList">
+				<div class="ui stackable eight column grid">
+					<span data-find="foreach: stocksList">
+						<div class="column">
+							<!-- <span data-bind="text: Company"></span> -->
+						</div>
+					</span>
 					<div class="column">
-						<span data-bind="text: Company"></span>
+						Placeholder
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="twelve wide column" id="statistics" style="display: none">
+			<div class="ui horizontal segment">
+				<div class="column">
+					Placeholder
 				</div>
 			</div>
 		</div>

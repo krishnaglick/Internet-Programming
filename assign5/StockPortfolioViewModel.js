@@ -1,5 +1,5 @@
 function StockPortfolioViewModel() {
-	this.stocksList = ko.observableArray(getStockList());
+	this.stocksList = ko.observableArray([]);
 	this.myStocks = ko.observableArray([]);
 	this.chartStocks = ko.observableArray([]);
 

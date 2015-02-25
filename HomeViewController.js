@@ -28,6 +28,7 @@ function SemanticSetup() {
 	$('#navRegister').click(function() {
 		$('#registerModal').modal({
 			onHidden: function() {
+				home_view_model.username('');
 				home_view_model.password('');
 			}
 		}).modal('show');
@@ -60,14 +61,14 @@ function NavigationSetup() {
 	$('#loginModal input, #registerModal input').keydown(function(e) {
 		if(e.keyCode == 13) { //Enter
 			//This is probably bad
-			if(home_view_model.username() !== '' home_view_model.password() !== '') {
+			if(home_view_model.username() !== '' && home_view_model.password() !== '') {
 				$(this).closest('.ui.small.modal').find('.ui.primary.button').click();
 			}
 		}
 	})
 }
 
-function cleanUp() om{
+function cleanUp() {
 	if(typeof window.canvas != 'undefined') {
 		window.canvas.clear();
 	}
