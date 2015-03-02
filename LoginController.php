@@ -33,6 +33,7 @@
 	function register() {
 		if(isUserInDatabase() > 0) {
 			http_response_code(409); //User exists
+			Exit();
 		}
 		$statement = getDB()->prepare(getQuery("register"));
 		$statement->bindParam(':username', $_POST["username"]);
