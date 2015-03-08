@@ -9,7 +9,7 @@
 		<span data-bind="text: '$' + parseFloat(myMoney()).toFixed(2)"></span>
 	</span>
 	<div class="ui grid">
-		<div class="three wide column">
+		<div class="two wide column">
 			<div class="ui horizontal segment">
 				<div class="ui vertical menu" id="stockPortfolioMenu">
 					<div class="item"></div>
@@ -34,7 +34,6 @@
 						<div class="ui basic segment">
 							<span data-bind="foreach: myStocks">
 								<div class="row">
-									<span>jfjf</span>
 									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}">
 										<i class="external share icon"></i>
 										<span data-bind="text: $index"></span>

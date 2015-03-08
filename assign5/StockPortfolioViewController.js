@@ -61,6 +61,7 @@ function loadStockData() {
 			val.Index = i;
 			return val;
 		}));
+		
 		ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
 		$('#loader').hide();
 		$('.ui.green.vertical.segment').show();

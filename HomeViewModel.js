@@ -36,6 +36,8 @@ HomeViewModel.prototype.login = function() {
 			that.ajaxHeaderMessage('Success!');
 			that.ajaxBodyMessage('Login was successful');
 			that.authTicket(data.authTicket);
+			Cookies.set('username', that.username());
+			Cookies.set('authTicket', that.authTicket());
 		},
 		error: function() {
 			that.messageType = false;
@@ -67,6 +69,8 @@ HomeViewModel.prototype.register = function() {
 			that.ajaxHeaderMessage('Success!');
 			that.ajaxBodyMessage('Account was created, you are now logged in!');
 			that.authTicket(data.authTicket);
+			Cookies.set('username', that.username());
+			Cookies.set('authTicket', that.authTicket());
 		},
 		error: function() {
 			that.messageType = false;
@@ -96,6 +100,8 @@ HomeViewModel.prototype.logout = function() {
 			that.ajaxBodyMessage('You were successfully logged out');
 			that.authTicket('');
 			that.username('');
+			Cookies.expire('username');
+			Cookies.expire('authTicket');
 		}
 	});
 }
