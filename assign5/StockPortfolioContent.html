@@ -1,10 +1,16 @@
-<div class="ui green vertical segment" style="min-height: 400px">
+<div class="ui segment" id="loader" style="height: 400px;">
+	<div class="ui active dimmer">
+		<div class="ui large text loader">Loading</div>
+	</div>
+</div>
+
+<div class="ui green vertical segment" style="min-height: 400px; display: none;">
 	<span class="ui green label" style="float: right; margin-right: 5%;">
 		<span data-bind="text: '$' + parseFloat(myMoney()).toFixed(2)"></span>
 	</span>
 	<div class="ui grid">
-		<div class="two wide column">
-			<div class="ui horizontal segment" style="position: fixed">
+		<div class="three wide column">
+			<div class="ui horizontal segment">
 				<div class="ui vertical menu" id="stockPortfolioMenu">
 					<div class="item"></div>
 					<a class="active green item" data-selection="#myPortfolio">
@@ -21,16 +27,17 @@
 			</div>
 		</div>
 
-		<div class="twelve wide column">
+		<div class="eleven wide column">
 			<div class="ui horizontal segment" id="myPortfolio" style="display: none">
 				<div class="ui grid">
-					<div class="two wide column">
+					<div class="three wide column">
 						<div class="ui basic segment">
 							<span data-bind="foreach: myStocks">
 								<div class="row">
-									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}, visible: Amount() > 0">
+									<span>jfjf</span>
+									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}">
 										<i class="external share icon"></i>
-										<span data-bind="text: Name"></span>
+										<span data-bind="text: $index"></span>
 									</div>
 								</div>
 							</span>
@@ -43,7 +50,7 @@
 			</div>
 
 			<div class="ui horizontal segment" id="buySell" style="display: none">
-				<div class="ui stackable eight column grid"
+				<div class="ui four column grid"
 					<span data-bind="foreach: stocksList">
 						<div class="column">
 							<div data-bind="text: Name"></div>
@@ -72,7 +79,6 @@
 </div>
 
 
-<script src="assets/highcharts.js" type="text/javascript"></script>
 <script src="assign5/StockList.js" type="text/javascript"></script>
 <script src="assign5/StockPortfolioViewModel.js" type="text/javascript"></script>
 <script src="assign5/StockPortfolioViewController.js" type="text/javascript"></script>

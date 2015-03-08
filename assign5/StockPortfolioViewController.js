@@ -47,17 +47,22 @@ function loadStockData() {
 		stock_portfolio_view_model.stocksList($.map(data.query.results.quote, function(val, i) {
 			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
 
-			stock_portfolio_view_model.myStocks().push({
+			/*stock_portfolio_view_model.myStocks().push({
 				Symbol: val.Symbol,
 				Name: val.Name,
 				Amount: ko.observable(0),
 				Cost: val.LastTradePriceOnly
-			});
-
-			val.Amount = ko.observable(stock_portfolio_view_model.myStocks()[i].Amount());
+			});*/
+			if(typeof stock_portfolio_view_model.myStocks()[val.Symbol] == 'undefined') {
+				stock_portfolio_view_model.myStocks()[val.Symbol] = [];
+			}
+			val.Amount = ko.observable(stock_portfolio_view_model.myStocks()[val.Symbol].length);
+			
 			val.Index = i;
 			return val;
 		}));
 		ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
+		$('#loader').hide();
+		$('.ui.green.vertical.segment').show();
 	});
 }
