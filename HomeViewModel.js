@@ -1,6 +1,4 @@
 function HomeViewModel() {
-	var that = this;
-
 	this.username = ko.observable('');
 	this.password = ko.observable('');
 	this.authTicket = ko.observable('');
@@ -9,9 +7,9 @@ function HomeViewModel() {
 	this.ajaxBodyMessage = ko.observable('');
 
 	this.pageRoute = ko.observable('Home');
-	this.pageTitle = ko.computed(function() {
-		return that.pageRoute() + ' - COP 4813: Internet Programming';
-	});
+	this.pageTitle = ko.pureComputed(function() {
+		return this.pageRoute() + ' - COP 4813: Internet Programming';
+	}, this);
 
 	this.messageType = true;
 	this.ajaxRoute = "";

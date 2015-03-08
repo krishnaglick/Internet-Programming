@@ -27,8 +27,9 @@ $(function() {
 
 	activeOption.click();
 
+	var chart = document.getElementById("stockChart").getContext("2d");
 	stock_portfolio_view_model.chartStocks.subscribe(function() {
-		//Rebuild the chart
+		new Chart(chart).Bar(stock_portfolio_view_model.chartStocks());
 	});
 })
 
@@ -61,7 +62,7 @@ function loadStockData() {
 			val.Index = i;
 			return val;
 		}));
-		
+
 		ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
 		$('#loader').hide();
 		$('.ui.green.vertical.segment').show();

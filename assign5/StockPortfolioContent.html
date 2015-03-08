@@ -32,18 +32,18 @@
 				<div class="ui grid">
 					<div class="three wide column">
 						<div class="ui basic segment">
-							<span data-bind="foreach: myStocks">
-								<div class="row">
+							<span data-bind="foreach: myStocksListing">
+								<div class="row" data-bind="visible: values.length > 0">
 									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}">
 										<i class="external share icon"></i>
-										<span data-bind="text: $index"></span>
+										<span data-bind="text: key"></span>
 									</div>
 								</div>
 							</span>
 						</div>
 					</div>
 					<div class="eleven wide column">
-						<div id="myStocksChart" style="width:100%; height:400px;"></div>
+						<canvas id="stockChart" style="width:600px; height:400px;"></canvas>
 					</div>
 				</div>
 			</div>
