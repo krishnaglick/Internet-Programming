@@ -48,12 +48,6 @@ function loadStockData() {
 		stock_portfolio_view_model.stocksList($.map(data.query.results.quote, function(val, i) {
 			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
 
-			/*stock_portfolio_view_model.myStocks().push({
-				Symbol: val.Symbol,
-				Name: val.Name,
-				Amount: ko.observable(0),
-				Cost: val.LastTradePriceOnly
-			});*/
 			if(typeof stock_portfolio_view_model.myStocks()[val.Symbol] == 'undefined') {
 				stock_portfolio_view_model.myStocks()[val.Symbol] = [];
 			}
