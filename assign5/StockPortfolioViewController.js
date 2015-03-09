@@ -27,9 +27,41 @@ $(function() {
 
 	activeOption.click();
 
-	var chart = document.getElementById("stockChart").getContext("2d");
 	stock_portfolio_view_model.chartStocks.subscribe(function() {
-		new Chart(chart).Bar(stock_portfolio_view_model.chartStocks());
+		//new Chart(chart).Bar(stock_portfolio_view_model.chartStocks());
+		$("#stockChart").CanvasJSChart({
+      title:{
+        text: "Top Oil Reserves"    
+      },
+      animationEnabled: true,
+      axisY: {
+        title: "Reserves(MMbbl)"
+      },
+      legend: {
+        verticalAlign: "bottom",
+        horizontalAlign: "center"
+      },
+      theme: "theme2",
+      data: [
+
+      {        
+        type: "column",  
+        showInLegend: true, 
+        legendMarkerColor: "grey",
+        legendText: "MMbbl = one million barrels",
+        dataPoints: [      
+        {y: 297571, label: "Venezuela"},
+        {y: 267017,  label: "Saudi" },
+        {y: 175200,  label: "Canada"},
+        {y: 154580,  label: "Iran"},
+        {y: 116000,  label: "Russia"},
+        {y: 97800, label: "UAE"},
+        {y: 20682,  label: "US"},        
+        {y: 20350,  label: "China"}        
+        ]
+      }   
+      ]
+    });
 	});
 })
 

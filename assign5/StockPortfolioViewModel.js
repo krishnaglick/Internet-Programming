@@ -14,34 +14,21 @@ function StockPortfolioViewModel() {
 		return out;
 	}, this);
 
-	this.chartStocks = ko.observable({
-		labels: [],
-		datasets: []
-	});
+	this.chartStocks = ko.observableArray([]);
 
 	this.myMoney = ko.observable(500);
 }
 
 StockPortfolioViewModel.prototype.addToChart = function(data, element, viewModel) {
 	var key = data.key;
-	var stockName = ko.utils.arrayFirst(viewModel.stocksList(), function(item) {
-			            return ko.utils.stringStartsWith(item.Symbol, key);
-			        }).Name
+	var stockName = data.Symbol
 	var chartData = {
-		label: stockName,
-        fillColor: "rgba(220,220,220,0.5)",
-        strokeColor: "rgba(220,220,220,0.8)",
-        highlightFill: "rgba(220,220,220,0.75)",
-        highlightStroke: "rgba(220,220,220,1)",
-        data: eval(data.values.join('+'))
 	}
 	if($(element).hasClass('active')) {
-		viewModel.chartStocks().labels.remove(key);
-		viewModel.chartStocks().datasets.remove(chartData.stockName);
+		viewModel.chartStocks.remove(key);
 	}
 	else {
-		viewModel.chartStocks().labels.push(key);
-		viewModel.chartStocks().datasets.push(chartData);
+		viewModel.chartStocks.push(key);
 	}
 	$(element).toggleClass('active');
 }
