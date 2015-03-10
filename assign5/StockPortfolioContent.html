@@ -33,8 +33,8 @@
 					<div class="three wide column">
 						<div class="ui basic segment">
 							<span data-bind="foreach: myStocksListing">
-								<div class="row" data-bind="visible: values.length > 0">
-									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $element, $root)}">
+								<div class="row">
+									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $root)}, css: { active: $root.myStocks()[$data.key].Active }">
 										<i class="external share icon"></i>
 										<span data-bind="text: key"></span>
 									</div>
