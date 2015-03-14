@@ -45,7 +45,6 @@ function SemanticSetup() {
 	$('#navRegister').click(function() {
 		$('#registerModal').modal({
 			onHidden: function() {
-				home_view_model.username('');
 				home_view_model.password('');
 			}
 		}).modal('show');
