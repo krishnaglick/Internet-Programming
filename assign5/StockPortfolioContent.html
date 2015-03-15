@@ -19,9 +19,6 @@
 					<a class="green item" data-selection="#buySell">
 						Buy/Sell
 					</a>
-					<a class="green item" data-selection="#statistics">
-						Statistics
-					</a>
 					<div class="item"></div>
 				</div>
 			</div>
@@ -32,17 +29,19 @@
 				<div class="ui grid">
 					<div class="three wide column">
 						<div class="ui basic segment">
-							<span data-bind="foreach: myStocksListing">
-								<div class="row">
-									<div class="fluid ui toggle button" data-bind="click: function() {$root.addToChart($data, $root)}, css: { active: $root.myStocks()[$data.key].Active }">
-										<i class="external share icon"></i>
-										<span data-bind="text: key"></span>
+							<span data-bind="foreach: stocksList">
+								<span data-bind="if: $data.myOwnedStocks().length > 0">
+									<div class="row" data-bind="with: $data.myOwnedStocks">
+										<div class="fluid ui toggle button" data-bind="click: function() {$root.addOrRemoveStockFromChart($data, $parent, $root)}, css: { active: $data.active }">
+											<i class="external share icon"></i>
+											<span data-bind="text: $parent.Name"></span>
+										</div>
 									</div>
-								</div>
+								</span>
 							</span>
 						</div>
 					</div>
-					<div class="eleven wide column">
+					<div class="eleven wide column" data-bind="visible: chartStocksMarket().length > 0">
 						<div id="stockChart" style="width:600px; height:400px;"></div>
 					</div>
 				</div>
@@ -55,11 +54,11 @@
 							<div data-bind="text: Name"></div>
 							<div data-bind="text: '$' + LastTradePriceOnly"></div>
 							<div class="mini ui icon buttons">
-								<div class="ui red button" data-bind="click: function() {$root.decrement($data, $root)}">
+								<div class="ui red button" data-bind="click: function() {$root.decrement(symbol, $root)}">
 									<i class="minus icon"></i>
 								</div>
-								<div class="or" data-bind="attr: {'data-text': Amount}"></div>
-								<div class="ui green button" data-bind="click: function() {$root.increment($data, $root)}">
+								<div class="or" data-bind="attr: {'data-text': $data.myOwnedStocks().length}"></div>
+								<div class="ui green button" data-bind="click: function() {$root.increment(symbol, $root)}">
 									<i class="plus icon"></i>
 								</div>
 							</div>
@@ -68,11 +67,6 @@
 				</div>
 			</div>
 
-			<div class="ui horizontal segment" id="statistics" style="display: none">
-				<div class="column">
-					Placeholder
-				</div>
-			</div>
 		</div>
 	</div>
 </div>

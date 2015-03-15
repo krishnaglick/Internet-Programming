@@ -115,3 +115,9 @@ function SubscriptionSetup() {
 		}
 	});
 }
+
+function showMessage(isSuccess, messageTitle, messageBody) {
+	home_view_model.messageType = isSuccess;
+	home_view_model.ajaxHeaderMessage(messageTitle);
+	home_view_model.ajaxBodyMessage(messageBody);
+}

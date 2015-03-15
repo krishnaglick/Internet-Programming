@@ -26,70 +26,36 @@ $(function() {
 	});
 
 	activeOption.click();
-
-	stock_portfolio_view_model.chartStocks.subscribe(function() {
-		$("#stockChart").CanvasJSChart({
-	      title:{
-	        text: "Stocks Cost (Current vs Yours)"    
-	      },
-	      animationEnabled: true,
-	      axisY: {
-	        title: "Stock Value"
-	      },
-	      legend: {
-	        verticalAlign: "bottom",
-	        horizontalAlign: "center"
-	      },
-	      theme: "theme2",
-	      data: [{        
-		        type: "column",  
-		        showInLegend: true, 
-		        legendMarkerColor: "grey",
-		        legendText: "Stock",
-		        dataPoints: stock_portfolio_view_model.chartStocks()
-	      }]
-	    });
-	});
 })
 
 function loadStockData() {
-	var stockUrl = 'http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quote where symbol in (';
-	getStockList().forEach(function (val, i) {
-		stockUrl += "'" + val + "',";
-	});
-	stockUrl = stockUrl.substring(stockUrl, stockUrl.length - 1) + ')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
+	function processStockData(data) {
+		data.query.results.quote.forEach(function(val, i) {
+			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
+			stock_portfolio_view_model.stocksList.push(val);
+			stock_portfolio_view_model.stocksList()[val.symbol] = i;
+			stock_portfolio_view_model.stocksList()[i].myOwnedStocks = ko.observableArray([]);
+			stock_portfolio_view_model.stocksList()[i].myOwnedStocks().active = ko.observable(false);
+		});
+	}
+	function generateStockUrlFromList() {
+		var stockUrl = 'http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quote where symbol in (';
+		getStockList().forEach(function (val, i) {
+			stockUrl += "'" + val + "',";
+		});
+		return stockUrl.substring(stockUrl, stockUrl.length - 1) + ')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
+	}
+
 	$.ajax({
 		type: 'GET',
-		url: stockUrl,
+		url: generateStockUrlFromList(),
 		dataType: 'json'
 	})
 	.success(function(data) {
-		stock_portfolio_view_model.stocksList($.map(data.query.results.quote, function(val, i) {
-			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
-
-			//Need to add support for loading old user data if logged in
-			if(typeof stock_portfolio_view_model.myStocks()[val.Symbol] == 'undefined') {
-				stock_portfolio_view_model.myStocks()[val.Symbol] = [];
-			}
-			val.Amount = ko.observable(stock_portfolio_view_model.myStocks()[val.Symbol].length);
-			
-			val.Index = i;
-			return val;
-		}));
+		processStockData(data);
 	})
 	.error(function() {
-		stock_portfolio_view_model.stocksList($.map(backupStockData, function(val, i) {
-			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
-
-			//Need to add support for loading old user data if logged in
-			if(typeof stock_portfolio_view_model.myStocks()[val.Symbol] == 'undefined') {
-				stock_portfolio_view_model.myStocks()[val.Symbol] = [];
-			}
-			val.Amount = ko.observable(stock_portfolio_view_model.myStocks()[val.Symbol].length);
-			
-			val.Index = i;
-			return val;
-		}));
+		processStockData(backupStockData);
 	})
 	.complete(function() {
 		ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
@@ -98,8 +64,38 @@ function loadStockData() {
 	});
 }
 
-function updateChartOnChange(key) {
-	//I am a bad, bad man
-	$('div.fluid.ui.toggle.button > span:contains(' + key + ')').click();
-	$('div.fluid.ui.toggle.button > span:contains(' + key + ')').click();
+function updateStockChart() {
+	$("#stockChart").CanvasJSChart({
+      title:{
+        text: "Stock Value (Current vs Yours)"    
+      },
+      animationEnabled: true,
+      axisY: {
+        title: "Stock Value"
+      },
+      legend: {
+        verticalAlign: "bottom",
+        horizontalAlign: "center"
+      },
+      theme: "theme2",
+      data: [
+      {        
+        type: "column",
+		toolTipContent: "{label}<br/><span style='\"'color: {color};'\"'><strong>{name}</strong></span>: ${y}",
+        showInLegend: true,
+        legendMarkerColor: "blue",
+        name: "My Stocks' Value",
+        dataPoints: stock_portfolio_view_model.chartStocksUser()
+      },
+      {
+        type: "column",
+		toolTipContent: "{label}<br/><span style='\"'color: {color};'\"'><strong>{name}</strong></span>: ${y}",
+		axisYType: "secondary",
+        showInLegend: true,
+        legendMarkerColor: "red",
+        name: "Market Stocks' Value",
+        dataPoints: stock_portfolio_view_model.chartStocksMarket()
+      }
+      ]
+    });
 }
