@@ -24,6 +24,7 @@
 				$statement->bindParam(':username', $_POST["username"]);
 				$statement->execute();
 				http_response_code(200); //Things are okay
+				echo json_encode($statement->rowCount());
 			}
 			else {
 				$statement = getDB()->prepare(getQuery("saveStocks"));
@@ -32,12 +33,13 @@
 				$statement->bindParam(':username', $_POST["username"]);
 				$statement->execute();
 				http_response_code(201); //Things are created
+				echo json_encode($statement->rowCount());
 			}
+			updateAuthTicket();
 		}
 		else {
 			http_response_code(401); //Unauthorized
 		}
-		http_response_code(200); //Things are okay
 	}
 
 	function loadStocks() {
@@ -74,6 +76,12 @@
 				return false;
 			}
 		}
+	}
+
+	function updateAuthTicket() {
+		$statement = getDB()->prepare(getQuery("updateTicket"));
+		$statement->bindParam(':authTicket', $_POST["authTicket"]);
+		$statement->execute();
 	}
 
 	function userHasStocks() {

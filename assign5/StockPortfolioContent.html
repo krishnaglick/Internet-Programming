@@ -20,10 +20,10 @@
 			<div class="ui horizontal segment">
 				<div class="ui vertical menu" id="stockPortfolioMenu">
 					<div class="item"></div>
-					<a class="active green item" data-selection="#myPortfolio">
+					<a class="green item" data-selection="#myPortfolio">
 						My Portfolio
 					</a>
-					<a class="green item" data-selection="#buySell">
+					<a class="active green item" data-selection="#buySell">
 						Buy/Sell
 					</a>
 					<div class="item"></div>
@@ -33,7 +33,7 @@
 
 		<div class="eleven wide column">
 			<div class="ui horizontal segment" id="myPortfolio" style="display: none">
-				<div class="ui grid">
+				 <div class="ui grid">
 					<div class="three wide column">
 						<div class="ui basic segment">
 							<span data-bind="foreach: stocksList">
@@ -55,23 +55,31 @@
 			</div>
 
 			<div class="ui horizontal segment" id="buySell" style="display: none">
-				<div class="ui four column grid"
-					<span data-bind="foreach: stocksList">
-						<div class="column">
-							<div data-bind="text: Name"></div>
-							<div data-bind="text: '$' + LastTradePriceOnly"></div>
-							<div class="mini ui icon buttons">
-								<div class="ui red button" data-bind="click: function() {$root.decrement(symbol, $root)}">
-									<i class="minus icon"></i>
-								</div>
-								<div class="or" data-bind="attr: {'data-text': $data.myOwnedStocks().length}"></div>
+				<table class="ui table">
+					<thead>
+						<tr>
+							<th class="clickableTableHeader">Name</th>
+							<th class="clickableTableHeader">Price</th>
+							<th class="clickableTableHeader">Owned</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: stocksList">
+						<tr data-bind="css: { positive: $data.myOwnedStocks().length > 0 }">
+							<td data-bind="text: Name"></td>
+							<td data-bind="text: '$' + LastTradePriceOnly"></td>
+							<td data-bind="text: $data.myOwnedStocks().length"></td>
+							<td class="ui buttons">
 								<div class="ui green button" data-bind="click: function() {$root.increment(symbol, $root)}">
-									<i class="plus icon"></i>
+									Buy
 								</div>
-							</div>
-						</div>
-					</span>
-				</div>
+								<div class="ui red button" data-bind="click: function() {$root.decrement(symbol, $root)}">
+									Sell
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 		</div>

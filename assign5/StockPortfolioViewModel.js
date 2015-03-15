@@ -72,16 +72,11 @@ StockPortfolioViewModel.prototype.saveStocks = function(viewModel) {
 			},
 			authTicket: home_view_model.authTicket
 		}),
-		success: function(data) {
-			debugger;
-		},
 		error: function(data) {
 			if(data.status === 401) {
-				showMessage(false, 'Error', 'Your session has timed out, please log in again.');
+				home_view_model.clearCredentials();
+				showMessage(false, 'Session Expired', 'Your session has expired, please log in again');
 			}
-		},
-		complete: function(data) {
-			
 		}
 	});
 }

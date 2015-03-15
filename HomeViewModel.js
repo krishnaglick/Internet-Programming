@@ -95,14 +95,18 @@ HomeViewModel.prototype.logout = function() {
 		data: ko.toJSON(this),
 		complete: function() {
 			showMessage(true, 'Logged Out', 'You were successfully logged out');
-			that.authTicket('');
-			that.username('');
-			Cookies.expire('username');
-			Cookies.expire('authTicket');
-			that.loggedIn(false);
-			if('loadStockData' in window) {
-				loadStockData();
-			}
+			that.clearCredentials();
 		}
 	});
+}
+
+HomeViewModel.prototype.clearCredentials = function() {
+	this.authTicket('');
+	this.username('');
+	Cookies.expire('username');
+	Cookies.expire('authTicket');
+	this.loggedIn(false);
+	if('loadStockData' in window) {
+		loadStockData();
+	}
 }

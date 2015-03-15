@@ -65,6 +65,12 @@ function loadStockData() {
 					data = JSON.parse(data);
 					stock_portfolio_view_model.myMoney(data.myMoney);
 					loadedStockData = data.stocksList;
+				},
+				error: function(data) {
+					if(data.status == 401) {
+						home_view_model.clearCredentials();
+						showMessage(false, 'Session Expired', 'Your session has expired, please log in again');
+					}
 				}
 			});
 		}
@@ -93,6 +99,7 @@ function loadStockData() {
 		}
 		$('#loader').hide();
 		$('.ui.green.vertical.segment').show();
+		$('#buySell .ui.table').tablesorter();
 	});
 }
 
