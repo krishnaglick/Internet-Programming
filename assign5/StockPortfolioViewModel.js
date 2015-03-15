@@ -47,6 +47,45 @@ StockPortfolioViewModel.prototype.addOrRemoveStockFromChart = function(myStocks,
 	updateStockChart();
 }
 
+StockPortfolioViewModel.prototype.saveStocks = function(viewModel) {
+	if(!home_view_model.loggedIn()) {
+		return;
+	}
+
+	var myOwnedStocks = {};
+	viewModel.stocksList().forEach(function(val) {
+		if(val.myOwnedStocks().length > 0) {
+			myOwnedStocks[val.Symbol] = val.myOwnedStocks();
+		}
+	});
+	$.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign5/StockPortfolioController.php",
+		data: ko.toJSON({
+			ajaxRoute: 'saveStocks',
+			username: home_view_model.username,
+			stockData: {
+				myMoney: viewModel.myMoney,
+				stocksList: myOwnedStocks
+			},
+			authTicket: home_view_model.authTicket
+		}),
+		success: function(data) {
+			debugger;
+		},
+		error: function(data) {
+			if(data.status === 401) {
+				showMessage(false, 'Error', 'Your session has timed out, please log in again.');
+			}
+		},
+		complete: function(data) {
+			
+		}
+	});
+}
+
 StockPortfolioViewModel.prototype.decrement = function(stockSymbol, viewModel) {
 	var currentFunds = viewModel.myMoney;
 	var stockIndexInList = viewModel.stocksList()[stockSymbol];
@@ -57,6 +96,8 @@ StockPortfolioViewModel.prototype.decrement = function(stockSymbol, viewModel) {
 		currentHoldings.pop();
 		currentHoldings.valueHasMutated();
 		currentFunds(currentFunds() + stockValue);
+
+		viewModel.saveStocks(viewModel);
 
 		if(currentHoldings().active()) {
 			viewModel.removeStockFromChart(viewModel.stocksList()[stockIndexInList], viewModel);
@@ -83,6 +124,8 @@ StockPortfolioViewModel.prototype.increment = function(stockSymbol, viewModel) {
 		});
 		currentHoldings.valueHasMutated();
 		currentFunds(currentFunds() - stockValue);
+
+		viewModel.saveStocks(viewModel);
 
 		if(currentHoldings().active()) {
 			viewModel.removeStockFromChart(viewModel.stocksList()[stockIndexInList], viewModel);

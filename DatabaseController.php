@@ -13,8 +13,12 @@
 				'login' => "SELECT * FROM Users WHERE Username = :username AND Password = :password",
 				'createTicket' => "INSERT INTO AuthenticationTickets VALUES (:authTicket, NOW())",
 				'updateTicket' => "UPDATE AuthenticationTickets SET LastAccessedTime = NOW() WHERE AuthenticationTicket = :authTicket",
-				'validateTicket' => "SELECT LastAccessedTime FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket",
-				'deleteTicket' => "DELETE FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket"
+				'validateTicket' => "SELECT TIMEDIFF(NOW(), (SELECT LastAccessedTime FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket))",
+				'deleteTicket' => "DELETE FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket",
+				'saveStocks' => "INSERT INTO Stocks VALUES (:username, :stocks)",
+				'updateStocks' => "UPDATE Stocks SET Stocks = :stocks WHERE Username = :username",
+				'loadStocks' => "SELECT Stocks from Stocks WHERE Username = :username",
+				'haveStocks' => "SELECT * FROM Stocks WHERE Username = :username"
 			];
 
 		return $queries[$query];

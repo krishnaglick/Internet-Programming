@@ -29,12 +29,18 @@ $(function() {
 })
 
 function loadStockData() {
+	var loadedStockData = {};
 	function processStockData(data) {
 		data.query.results.quote.forEach(function(val, i) {
 			val.LastTradePriceOnly = parseFloat(val.LastTradePriceOnly).toFixed(2);
-			stock_portfolio_view_model.stocksList.push(val);
+			stock_portfolio_view_model.stocksList()[i] = val;
 			stock_portfolio_view_model.stocksList()[val.symbol] = i;
-			stock_portfolio_view_model.stocksList()[i].myOwnedStocks = ko.observableArray([]);
+			if(typeof loadedStockData[val.symbol] !== 'undefined') {
+				stock_portfolio_view_model.stocksList()[i].myOwnedStocks = ko.observableArray(loadedStockData[val.symbol]);
+			}
+			else {
+				stock_portfolio_view_model.stocksList()[i].myOwnedStocks = ko.observableArray([]);
+			}
 			stock_portfolio_view_model.stocksList()[i].myOwnedStocks().active = ko.observable(false);
 		});
 	}
@@ -45,6 +51,29 @@ function loadStockData() {
 		});
 		return stockUrl.substring(stockUrl, stockUrl.length - 1) + ')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
 	}
+	function loadStockDataIfUserLoggedIn() {
+		if(home_view_model.loggedIn()) {
+			home_view_model.ajaxRoute = 'loadStocks';
+
+			$.ajax({
+				type: "POST",
+				dataType: "JSON",
+				contentType: "application/json",
+				url: "assign5/StockPortfolioController.php",
+				data: ko.toJSON(home_view_model),
+				success: function(data) {
+					data = JSON.parse(data);
+					stock_portfolio_view_model.myMoney(data.myMoney);
+					loadedStockData = data.stocksList;
+				}
+			});
+		}
+		else {
+			stock_portfolio_view_model.myMoney(500);
+		}
+	}
+
+	loadStockDataIfUserLoggedIn();
 
 	$.ajax({
 		type: 'GET',
@@ -58,7 +87,10 @@ function loadStockData() {
 		processStockData(backupStockData);
 	})
 	.complete(function() {
-		ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
+		stock_portfolio_view_model.stocksList.valueHasMutated();
+		if(!ko.dataFor($('.assignmentSpace')[0])) {
+			ko.applyBindings(stock_portfolio_view_model, $('.assignmentSpace')[0]);
+		}
 		$('#loader').hide();
 		$('.ui.green.vertical.segment').show();
 	});

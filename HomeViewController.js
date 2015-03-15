@@ -10,6 +10,7 @@ $(function() {
 		if(typeof Cookies.get('username') !== 'undefined' && typeof Cookies.get('authTicket') !== 'undefined') {
 			home_view_model.username(Cookies.get('username'));
 			home_view_model.authTicket(Cookies.get('authTicket'));
+			home_view_model.loggedIn(true);
 		}
 
 		ko.applyBindings(home_view_model, $('title')[0]);

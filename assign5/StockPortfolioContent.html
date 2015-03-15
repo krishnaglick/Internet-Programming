@@ -5,10 +5,17 @@
 </div>
 
 <div class="ui green vertical segment" style="min-height: 400px; display: none;">
-	<span class="ui green label" style="float: right; margin-right: 5%;">
-		<span data-bind="text: '$' + parseFloat(myMoney()).toFixed(2)"></span>
+	<span data-bind="visible: home_view_model.loggedIn">
+		<span class="ui green label" style="float: right; margin-right: 5%;">
+			<span data-bind="text: '$' + parseFloat(myMoney()).toFixed(2)"></span>
+		</span>
 	</span>
-	<div class="ui grid">
+
+	<div data-bind="visible: !home_view_model.loggedIn()">
+		<h3>You need to be logged in to use the stock portfolio!</h3>
+	</div>
+
+	<div class="ui grid" data-bind="visible: home_view_model.loggedIn">
 		<div class="three wide column">
 			<div class="ui horizontal segment">
 				<div class="ui vertical menu" id="stockPortfolioMenu">
@@ -30,7 +37,7 @@
 					<div class="three wide column">
 						<div class="ui basic segment">
 							<span data-bind="foreach: stocksList">
-								<span data-bind="if: $data.myOwnedStocks().length > 0">
+								<span data-bind="if: typeof $data.myOwnedStocks !== 'undefined' && $data.myOwnedStocks().length > 0">
 									<div class="row" data-bind="with: $data.myOwnedStocks">
 										<div class="fluid ui toggle button" data-bind="click: function() {$root.addOrRemoveStockFromChart($data, $parent, $root)}, css: { active: $data.active }">
 											<i class="external share icon"></i>

@@ -2,6 +2,7 @@ function HomeViewModel() {
 	this.username = ko.observable('');
 	this.password = ko.observable('');
 	this.authTicket = ko.observable('');
+	this.loggedIn = ko.observable(false);
 
 	this.ajaxHeaderMessage = ko.observable('');
 	this.ajaxBodyMessage = ko.observable('');
@@ -30,17 +31,17 @@ HomeViewModel.prototype.login = function() {
 		url: "LoginController.php",
 		data: ko.toJSON(this),
 		success: function(data) {
-			that.messageType = true;
-			that.ajaxHeaderMessage('Success!');
-			that.ajaxBodyMessage('Login was successful');
+			showMessage(true, 'Success!', 'Login was successful');
 			that.authTicket(data.authTicket);
 			Cookies.set('username', that.username());
 			Cookies.set('authTicket', that.authTicket());
+			that.loggedIn(true);
+			if('loadStockData' in window) {
+				loadStockData();
+			}
 		},
 		error: function() {
-			that.messageType = false;
-			that.ajaxHeaderMessage('Failure');
-			that.ajaxBodyMessage('Username or Password was incorrect');
+			showMessage(false, 'Failure', 'Username or Password was incorrect');
 		},
 		complete: function() {
 			that.password('');
@@ -63,17 +64,17 @@ HomeViewModel.prototype.register = function() {
 		url: "LoginController.php",
 		data: ko.toJSON(this),
 		success: function(data) {
-			that.messageType = true;
-			that.ajaxHeaderMessage('Success!');
-			that.ajaxBodyMessage('Account was created, you are now logged in!');
+			showMessage(true, 'Success!', 'Account was created, you are now logged in!');
 			that.authTicket(data.authTicket);
 			Cookies.set('username', that.username());
 			Cookies.set('authTicket', that.authTicket());
+			that.loggedIn(true);
+			if('loadStockData' in window) {
+				stock_portfolio_view_model.saveStocks(stock_portfolio_view_model);
+			}
 		},
 		error: function() {
-			that.messageType = false;
-			that.ajaxHeaderMessage('Failure');
-			that.ajaxBodyMessage('Username already exists, please choose a different one');
+			showMessage(false, 'Failure', 'Username already exists, please choose a different one');
 			that.username('');
 		},
 		complete: function() {
@@ -93,13 +94,15 @@ HomeViewModel.prototype.logout = function() {
 		url: "LoginController.php",
 		data: ko.toJSON(this),
 		complete: function() {
-			that.messageType = true;
-			that.ajaxHeaderMessage('Logged Out');
-			that.ajaxBodyMessage('You were successfully logged out');
+			showMessage(true, 'Logged Out', 'You were successfully logged out');
 			that.authTicket('');
 			that.username('');
 			Cookies.expire('username');
 			Cookies.expire('authTicket');
+			that.loggedIn(false);
+			if('loadStockData' in window) {
+				loadStockData();
+			}
 		}
 	});
 }
