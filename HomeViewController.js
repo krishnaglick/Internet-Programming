@@ -24,7 +24,7 @@ $(function() {
 		var route = window.location.href.split('#')[1];
 		if(typeof route === 'undefined') {
 			route = "home";
-			window.location.href = window.location.origin + "/#" + route;
+			window.location.href = window.location.href.split('#')[0] + "/#" + route;
 		}
 		else {
 			changePage(route);
