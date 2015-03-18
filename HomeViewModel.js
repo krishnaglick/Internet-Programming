@@ -7,9 +7,9 @@ function HomeViewModel() {
 	this.ajaxHeaderMessage = ko.observable('');
 	this.ajaxBodyMessage = ko.observable('');
 
-	this.pageRoute = ko.observable('Home');
+	this.pageName = ko.observable('Home');
 	this.pageTitle = ko.pureComputed(function() {
-		return this.pageRoute() + ' - COP 4813: Internet Programming';
+		return this.pageName() + ' - COP 4813: Internet Programming';
 	}, this);
 
 	this.messageType = true;
