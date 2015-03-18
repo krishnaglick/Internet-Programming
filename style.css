@@ -19,7 +19,16 @@ a > h3
 {
 	cursor: pointer;
 }
-hidden
+.hidden
 {
-	display: none !important;
+	display: none;
+}
+div.link.item
+{
+	cursor: pointer;
+}
+#buySell .ui.table th.clickableTableHeader:hover
+{
+	cursor: pointer;
+	background-color: #C0C0C0;
 }

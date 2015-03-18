@@ -7,10 +7,28 @@ $(function() {
 		NavigationSetup();
 		SubscriptionSetup();
 		
+		if(typeof Cookies.get('username') !== 'undefined' && typeof Cookies.get('authTicket') !== 'undefined') {
+			home_view_model.username(Cookies.get('username'));
+			home_view_model.authTicket(Cookies.get('authTicket'));
+			home_view_model.loggedIn(true);
+		}
+
 		ko.applyBindings(home_view_model, $('title')[0]);
 		ko.applyBindings(home_view_model, $('.navigationContent')[0]);
 
-		$('a.item.home').click();
+		window.addEventListener('hashchange', function(e) {
+			var route = e.newURL.split('#')[1];
+			changePage(route);
+		});
+
+		var route = window.location.href.split('#')[1];
+		if(typeof route === 'undefined') {
+			route = "home";
+			window.location.href = window.location.href.split('#')[0] + "/#" + route;
+		}
+		else {
+			changePage(route);
+		}
 	});
 })
 
@@ -36,26 +54,38 @@ function SemanticSetup() {
 
 function NavigationSetup() {
 	$('.ui.dropdown.item a').click(function() {
-		var assignmentToLoad = $(this).data('route');
-
-		cleanUp();
-
-		if(!!ko.dataFor($('.assignmentSpace')[0])) {
-			ko.cleanNode($('.assignmentSpace')[0]);
-		}
-
-		if(assignmentToLoad !== '') {
-			$('.assignmentSpace').load(assignmentToLoad);
-		}
-		else {
-			$('.assignmentSpace').html('');
-		}
-
-		home_view_model.pageRoute($(this).find('span').text());
-
 		$('.ui.dropdown.item a i:not(".home")').addClass('thin');
 		$(this).find('i').removeClass('thin');
 	});
+
+	$('#loginModal input, #registerModal input').keydown(function(e) {
+		if(e.keyCode == 13) { //Enter
+			//This is probably bad
+			if(home_view_model.username() !== '' && home_view_model.password() !== '') {
+				$(this).closest('.ui.small.modal').find('.ui.primary.button').click();
+			}
+		}
+	})
+}
+
+function changePage(targetPage) {
+	var assignmentToLoad = $('a.item.' + targetPage).data('route');
+	$('a.item.' + targetPage).click();
+
+	cleanUp();
+
+	if(!!ko.dataFor($('.assignmentSpace')[0])) {
+		ko.cleanNode($('.assignmentSpace')[0]);
+	}
+
+	if(assignmentToLoad !== '') {
+		$('.assignmentSpace').load(assignmentToLoad);
+	}
+	else {
+		$('.assignmentSpace').html('');
+	}
+
+	home_view_model.pageRoute($('a.item.' + targetPage).find('span').text());
 }
 
 function cleanUp() {
@@ -85,4 +115,10 @@ function SubscriptionSetup() {
 			$('#errorMessage').slideUp();
 		}
 	});
+}
+
+function showMessage(isSuccess, messageTitle, messageBody) {
+	home_view_model.messageType = isSuccess;
+	home_view_model.ajaxHeaderMessage(messageTitle);
+	home_view_model.ajaxBodyMessage(messageBody);
 }

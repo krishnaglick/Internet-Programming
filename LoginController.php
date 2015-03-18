@@ -1,4 +1,7 @@
 <?php
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+
 	include 'DatabaseController.php';
 
 	$_POST = json_decode(file_get_contents("php://input"), true);
@@ -15,9 +18,7 @@
 	}
 
 	function generateAuthToken() {
-		$guid = com_create_guid();
-		$guid = str_replace("{", "", $guid);
-		$guid = str_replace("}", "", $guid);
+		$guid = getGUID();
 		$statement = getDB()->prepare(getQuery("createTicket"));
 		$statement->bindParam(':authTicket', $guid);
 		if($statement->execute()) {
@@ -32,6 +33,7 @@
 	function register() {
 		if(isUserInDatabase() > 0) {
 			http_response_code(409); //User exists
+			Exit();
 		}
 		$statement = getDB()->prepare(getQuery("register"));
 		$statement->bindParam(':username', $_POST["username"]);
@@ -64,12 +66,6 @@
 		$statement = getDB()->prepare(getQuery("deleteTicket"));
 		$statement->bindParam(':authTicket', $_POST["authTicket"]);
 		$statement->execute();
-
-		if($statement->rowCount() > 0) {
-			http_response_code(200); //Things are okay
-		}
-		else {
-			http_response_code(500); //DB Error
-		}
+		http_response_code(200); //Things are okay
 	}
 ?>
