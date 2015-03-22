@@ -3,6 +3,7 @@
 	ini_set('display_errors', 1);
 
 	include 'DatabaseController.php';
+	include 'AuthenticationModule.php';
 
 	$_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -17,17 +18,12 @@
 		}
 	}
 
-	function generateAuthToken() {
-		$guid = getGUID();
-		$statement = getDB()->prepare(getQuery("createTicket"));
-		$statement->bindParam(':authTicket', $guid);
-		if($statement->execute()) {
-			return ['authTicket' => $guid];
-		}
-		else {
-			http_response_code(500); //DB Error
-			Exit();
-		}
+	function isUserInDatabase() {
+		$statement = getDB()->prepare(getQuery("login"));
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->bindParam(':password', $_POST["password"]);
+		$statement->execute();
+		return $statement->rowCount();
 	}
 
 	function register() {
@@ -41,21 +37,13 @@
 		$statement->execute();
 
 		http_response_code(201); //User is created
-		echo json_encode(generateAuthToken());
-	}
-
-	function isUserInDatabase() {
-		$statement = getDB()->prepare(getQuery("login"));
-		$statement->bindParam(':username', $_POST["username"]);
-		$statement->bindParam(':password', $_POST["password"]);
-		$statement->execute();
-		return $statement->rowCount();
+		echo json_encode(generateAuthTicket());
 	}
 
 	function login() {
 		if(isUserInDatabase() > 0) {
 			http_response_code(200); //Things are okay
-			echo json_encode(generateAuthToken());
+			echo json_encode(generateAuthTicket());
 		}
 		else {
 			http_response_code(406); //Bad input data
@@ -63,9 +51,8 @@
 	}
 
 	function logout() {
-		$statement = getDB()->prepare(getQuery("deleteTicket"));
-		$statement->bindParam(':authTicket', $_POST["authTicket"]);
-		$statement->execute();
+		deleteAuthTicket($_POST["authTicket"]);
 		http_response_code(200); //Things are okay
+		echo json_encode('');
 	}
 ?>

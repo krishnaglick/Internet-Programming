@@ -1,9 +1,10 @@
 <?php
+	$GLOBALS['DB'] = new PDO('mysql:host=localhost;dbname=n00728069;charset=utf8', 'n00728069', 'copn00728069');
+	$GLOBALS['DB']->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$GLOBALS['DB']->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
 	function getDB() {
-		$db = new PDO('mysql:host=localhost;dbname=n00728069;charset=utf8', 'n00728069', 'copn00728069');
-		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-		return $db;
+		return $GLOBALS['DB'];
 	}
 
 	function getQuery($query) {
@@ -17,22 +18,16 @@
 				'saveStocks' => "INSERT INTO Stocks VALUES (:username, :stocks)",
 				'updateStocks' => "UPDATE Stocks SET Stocks = :stocks WHERE Username = :username",
 				'loadStocks' => "SELECT Stocks from Stocks WHERE Username = :username",
-				'haveStocks' => "SELECT * FROM Stocks WHERE Username = :username"
+				'haveStocks' => "SELECT * FROM Stocks WHERE Username = :username",
+				'saveRestaurantName' => "INSERT INTO Restaurants VALUES (:restaurantName)",
+				'saveRestaurantRating' => "INSERT INTO RestaurantRatings VALUES (:restaurantID, :username, :menuRating, :enviromentRating, :costRating, :qualityRating, :serviceRating)",
+				'userHasRatedRestaurant' => "SELECT * FROM Restaurants WHERE RestaurantID = (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName) AND Username = :username",
+				'getRestaurantRatings' => "SELECT Enviroment, Cost, Quality, Service FROM Restaurants INNER JOIN RestaurantRatings WHERE RestaurantName = :restaurantName AND Username = :username",
+				'getAllResturants' => "SELECT RestaurantName, Avg(Menu), Avg(Enviroment), Avg(Cost), Avg(Quality), Avg(Service) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
+				'updateRestaurantRating' => "UPDATE RestaurantRatings SET Menu = :menuRating, Enviroment = :enviromentRating, Cost = :costRating, Quality = :qualityRating, Service = :serviceRating WHERE RestaurantID = (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName) AND Username = :username",
+				'deleteRestaurant' => "DELETE FROM Restaurants WHERE RestaurantName = :restaurantName"
 			];
 
 		return $queries[$query];
-	}
-
-	function getGUID(){
-		mt_srand((double)microtime()*10000);
-	    $charid = strtoupper(md5(uniqid(rand(), true)));
-	    $hyphen = chr(45);
-	    $uuid = ""
-	        .substr($charid, 0, 8).$hyphen
-	        .substr($charid, 8, 4).$hyphen
-	        .substr($charid,12, 4).$hyphen
-	        .substr($charid,16, 4).$hyphen
-	        .substr($charid,20,12);
-	    return $uuid;
 	}
 ?>

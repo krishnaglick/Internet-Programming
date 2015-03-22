@@ -2,6 +2,7 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	include '../DatabaseController.php';
+	include '../AuthenticationModule.php';
 	
 	$_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -15,8 +16,20 @@
 		}
 	}
 
+	function userHasStocks() {
+		$statement = getDB()->prepare(getQuery("haveStocks"));
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->execute();
+		if($statement->rowCount() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	function saveStocks() {
-		if(validAuthTicket()) {
+		if(validAuthTicket($_POST["authTicket"])) {
 			if(userHasStocks()) {
 				$statement = getDB()->prepare(getQuery("updateStocks"));
 				$_POST["stockData"] = json_encode($_POST["stockData"]);
@@ -43,7 +56,7 @@
 	}
 
 	function loadStocks() {
-		if(validAuthTicket()) {
+		if(validAuthTicket($_POST["authTicket"])) {
 			if(userHasStocks()) {
 				$statement = getDB()->prepare(getQuery("loadStocks"));
 				$statement->bindParam(':username', $_POST["username"]);
@@ -59,40 +72,6 @@
 		}
 		else {
 			http_response_code(401); //Unauthorized
-		}
-	}
-
-	function validAuthTicket() {
-		$statement = getDB()->prepare(getQuery("validateTicket"));
-		$statement->bindParam(':authTicket', $_POST["authTicket"]);
-		$statement->execute();
-		if($statement->rowCount() == 1) {
-			$dateDiffResult = $statement->fetch()[0];
-			$dateDiffVals = explode(":", $dateDiffResult);
-			if($dateDiffVals[0] == 0 && $dateDiffVals[1] < 15) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-
-	function updateAuthTicket() {
-		$statement = getDB()->prepare(getQuery("updateTicket"));
-		$statement->bindParam(':authTicket', $_POST["authTicket"]);
-		$statement->execute();
-	}
-
-	function userHasStocks() {
-		$statement = getDB()->prepare(getQuery("haveStocks"));
-		$statement->bindParam(':username', $_POST["username"]);
-		$statement->execute();
-		if($statement->rowCount() > 0) {
-			return true;
-		}
-		else {
-			return false;
 		}
 	}
 ?>

@@ -24,7 +24,7 @@ Router.routes = {
 		name: 'Assignment 5'
 	},
 	assign6: {
-		url: 'assign5/StockPortfolioContent.html',
+		url: 'assign6/MEEQSContent.html',
 		name: 'Assignment 6'
 	}
 }
