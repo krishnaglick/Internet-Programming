@@ -21,6 +21,8 @@
 				'haveStocks' => "SELECT * FROM Stocks WHERE Username = :username",
 				'saveRestaurantName' => "INSERT INTO Restaurants VALUES (:restaurantName)",
 				'saveRestaurantRating' => "INSERT INTO RestaurantRatings VALUES (:restaurantID, :username, :menuRating, :enviromentRating, :costRating, :qualityRating, :serviceRating)",
+				'doesRestaurantExist' => "SELECT * FROM Restaurants WHERE RestaurantName = :restaurantName",
+				'getRestaurantID' => "SELECT restaurantID FROM Restaurants WHERE RestaurantName = :restaurantName",
 				'userHasRatedRestaurant' => "SELECT * FROM Restaurants WHERE RestaurantID = (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName) AND Username = :username",
 				'getRestaurantRatings' => "SELECT Enviroment, Cost, Quality, Service FROM Restaurants INNER JOIN RestaurantRatings WHERE RestaurantName = :restaurantName AND Username = :username",
 				'getAllResturants' => "SELECT RestaurantName, Avg(Menu), Avg(Enviroment), Avg(Cost), Avg(Quality), Avg(Service) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
