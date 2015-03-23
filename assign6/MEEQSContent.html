@@ -1,6 +1,14 @@
 <h3>MEEQS</h3>
 Menu: 
+<span data-bind="with: menuRating">
+	<span data-bind="foreach: [0,1,2]">
+		<i class="heart icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $data) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $data) } }, css: {empty: $data >= $parent.softRating() || $data >= $parent.hardRating() }"></i>
+	</span>
+</span>
 Enviroment: 
 Cost Efficiency:
 Food Quality:
 Service:
+
+<script type="text/javascript" src="assign6/MEEQSViewModel.js"></script>
+<script type="text/javascript" src="assign6/MEEQSViewController.js"></script>
