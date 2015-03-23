@@ -1,22 +1,8 @@
 function MEEQSViewModel() {
-	this.menuRating = ko.observable({
-		hardRating: ko.observable(0),
-		softRating: ko.observable(0)
-	});
-	this.stars = ko.observableArray([
-		{
-			highlighted: ko.observable(false)
-		},
-		{
-			highlighted: ko.observable(false)
-		},
-		{
-			highlighted: ko.observable(false)
-		},
-		{
-			highlighted: ko.observable(false)
-		}
-	]);
+	this.rating = function() {
+		this.hardRating = ko.observable(0);
+		this.softRating = ko.observable(0);
+	} 
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
