@@ -26,6 +26,7 @@
 				'userHasRatedRestaurant' => "SELECT * FROM Restaurants WHERE RestaurantID = (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName) AND Username = :username",
 				'getRestaurantRatings' => "SELECT Enviroment, Cost, Quality, Service FROM Restaurants INNER JOIN RestaurantRatings WHERE RestaurantName = :restaurantName AND Username = :username",
 				'getAllResturants' => "SELECT RestaurantName, Avg(Menu), Avg(Enviroment), Avg(Cost), Avg(Quality), Avg(Service) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
+				'getRestaurantNames' => "SELECT RestaurantName from Restaurants",
 				'updateRestaurantRating' => "UPDATE RestaurantRatings SET Menu = :menuRating, Enviroment = :enviromentRating, Cost = :costRating, Quality = :qualityRating, Service = :serviceRating WHERE RestaurantID = (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName) AND Username = :username",
 				'deleteRestaurant' => "DELETE FROM Restaurants WHERE RestaurantName = :restaurantName"
 			];

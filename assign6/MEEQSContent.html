@@ -1,14 +1,22 @@
 <h3>MEEQS</h3>
-Menu: 
-<span data-bind="with: new rating()">
-	<span data-bind="foreach: [1,2,3]">
-		<i class="star icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $data) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $data) } }, css: {empty: ($data >= $parent.softRating() + 1 || $data >= $parent.hardRating() + 1) }"></i>
+<div class="ui search selection dropdown">
+	<input name="restaurants" type="hidden" data-bind="textInput: selectedRestaurant" />
+	<i class="dropdown icon"></i>
+	<div class="default text">Select or Enter a Restaurant</div>
+	<div class="menu" data-bind="foreach: restaurants">
+		<div class="item" data-bind="text: $data"></div>
+	</div>
+</div>
+<div data-bind="foreach: categories">
+	<span data-bind="text: $data"></span>: 
+	<span data-bind="with: new $root.rating()">
+		<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
+		<span data-bind="foreach: new Array($root.numberOfStars())">
+			<i class="star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: {empty: $parent.isStarSelected($index()) }"></i>
+		</span>
 	</span>
-</span>
-Enviroment: 
-Cost Efficiency:
-Food Quality:
-Service:
+	<div></div>
+</div>
 
 <script type="text/javascript" src="assign6/MEEQSViewModel.js"></script>
 <script type="text/javascript" src="assign6/MEEQSViewController.js"></script>

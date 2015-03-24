@@ -11,7 +11,7 @@
 			switch($_POST["ajaxRoute"]) {
 				case "rateRestaurant": rateRestaurant(); break;
 				case "getRestaurantRatings": getRestaurantRatings(); break;
-				case "getAllRestaurants": getAllRestaurants(); break;
+				case "getRestaurantNames": getRestaurantNames(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
 				case "deleteRestaurant": deleteRestaurant(); break;
 				default: echo json_encode(["error" => "Bad Route!"]); break;
@@ -97,5 +97,11 @@
 			}
 			createRestaurantRating($restaurantID);
 		}
+	}
+
+	function getRestaurantNames() {
+		$statement = getDB()->prepare(getQuery("getRestaurantNames"));
+		$statement->execute();
+		echo json_encode($statement->fetchAll());
 	}
 ?>
