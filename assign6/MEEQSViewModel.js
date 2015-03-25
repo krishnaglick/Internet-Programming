@@ -1,29 +1,31 @@
 function MEEQSViewModel() {
-	this.rating = function(categoryName) {
-		this.hardRating = ko.observable(-1);
-		this.softRating = ko.observable(-1);
-
-		this.isStarSelected = function(index) {
-			if(this.softRating() == -1) {
-				return this.hardRating() < index;
-			}
-			else {
-				return this.softRating() < index;
-			}
-		}
-
-		this.categoryName = categoryName;
-	}
-
 	this.numberOfStars = ko.observable(3);
 
-	this.categories = ko.observableArray([
-		new this.rating('Menu'),
-		new this.rating('Enviroment'),
-		new this.rating('Cost Efficiency'),
-		new this.rating('Food Quality'),
-		new this.rating('Service')
+	this.categorieTypes = ko.observableArray([
+		'Menu',
+		'Enviroment',
+		'Cost Efficiency',
+		'Food Quality',
+		'Service'
 	]);
+	
+	this.categories = ko.computed(function() {
+		return $.map(that.categorieTypes(), function(category) {
+			return {
+				hardRating: ko.observable(-1),
+				softRating: ko.observable(-1),
+				isStarSelected: function(index) {
+					if(this.softRating() == -1) {
+						return this.hardRating() < index;
+					}
+					else {
+						return this.softRating() < index;
+					}
+				},
+				categoryName: category
+			};
+		});
+	});
 
 	this.restaurants = ko.observableArray(['a', 'asdf', 'xcxz']);
 	this.selectedRestaurant = ko.observable('');
