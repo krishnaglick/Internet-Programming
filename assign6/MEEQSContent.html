@@ -1,21 +1,44 @@
-<h3>MEEQS</h3>
-<div class="ui search selection dropdown">
-	<input name="restaurants" type="hidden" data-bind="textInput: selectedRestaurant" />
-	<i class="dropdown icon"></i>
-	<div class="default text">Select or Enter a Restaurant</div>
-	<div class="menu" data-bind="foreach: restaurants">
-		<div class="item" data-bind="text: $data"></div>
+<div class="ui centered grid" style="margin-top: 1%;">
+	<div class="eight wide column">
+		<div class="ui small form">
+			<h3 class="ui header">MEEQS</h3>
+
+			<div class="six wide field">
+				<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
+					<input type="hidden" data-bind="value: selectedRestaurant" />
+					<div class="default text">Select or Enter a Restaurant</div>
+					<i class="dropdown icon"></i>
+					<div class="menu" data-bind="foreach: restaurants">
+						<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+					</div>
+				</div>
+			</div>
+
+			<div data-bind="foreach: categories">
+				<div class="two fields">
+					<div class="two wide field">
+						<span data-bind="text: categoryName"></span>
+					</div>
+					<div class="two wide field">
+						<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
+						<span data-bind="foreach: new Array($root.numberOfStars())">
+							<i class="green star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: { empty: $parent.isStarSelected($index()) }"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="inline fields" style="min-width: 190px;">
+				<div class="field">
+					<div class="ui inverted green button" data-bind="click: submitRating">Submit</div>
+				</div>
+				<div class="field">
+					<div class="ui inverted red button" data-bind="click: clearForm">Clear</div>
+				</div>
+			</div>
+
+		</div>
 	</div>
-</div>
-<div data-bind="foreach: categories">
-	<span data-bind="text: $data"></span>: 
-	<span data-bind="with: new $root.rating()">
-		<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
-		<span data-bind="foreach: new Array($root.numberOfStars())">
-			<i class="star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: {empty: $parent.isStarSelected($index()) }"></i>
-		</span>
-	</span>
-	<div></div>
 </div>
 
 <script type="text/javascript" src="assign6/MEEQSViewModel.js"></script>

@@ -1,5 +1,5 @@
 function MEEQSViewModel() {
-	this.rating = function() {
+	this.rating = function(categoryName) {
 		this.hardRating = ko.observable(-1);
 		this.softRating = ko.observable(-1);
 
@@ -11,20 +11,22 @@ function MEEQSViewModel() {
 				return this.softRating() < index;
 			}
 		}
+
+		this.categoryName = categoryName;
 	}
 
 	this.numberOfStars = ko.observable(3);
 
 	this.categories = ko.observableArray([
-		'Menu',
-		'Enviroment',
-		'Cost Efficiency',
-		'Food Quality',
-		'Service'
+		new this.rating('Menu'),
+		new this.rating('Enviroment'),
+		new this.rating('Cost Efficiency'),
+		new this.rating('Food Quality'),
+		new this.rating('Service')
 	]);
 
-	this.restaurants = ko.observableArray([]);
-	this.selectedRestaurant = ko.observable();
+	this.restaurants = ko.observableArray(['a', 'asdf', 'xcxz']);
+	this.selectedRestaurant = ko.observable('');
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -40,7 +42,7 @@ MEEQSViewModel.prototype.removeHighlight = function(softRating) {
 }
 
 MEEQSViewModel.prototype.loadRestaurants = function() {
-	$.ajax({
+	return $.ajax({
 		type: "POST",
 		dataType: "JSON",
 		contentType: "application/json",
@@ -48,7 +50,9 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 		//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
 		data: ko.toJSON({ ajaxRoute: 'getRestaurantNames' }),
 		success: function(data) {
-			meeqs_view_model.restaurants(data);
+			if(data.length > 0) {
+				meeqs_view_model.restaurants(data);
+			}
 		},
 		error: function(data) {
 			if(data.status === 500) {
@@ -56,4 +60,20 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 			}
 		}
 	});
+}
+
+MEEQSViewModel.prototype.submitRating = function() {
+	if(typeof this.selectedRestaurant() !== 'undefined' && this.selectedRestaurant() != '') {
+
+	}
+}
+
+MEEQSViewModel.prototype.clearForm = function() {
+	this.categories().forEach(function(val) {
+		val.hardRating(-1);
+		val.softRating(-1);
+	});
+
+	this.selectedRestaurant('');
+	$('#restaurants.dropdown').dropdown('restore defaults');
 }
