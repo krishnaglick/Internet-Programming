@@ -10,7 +10,7 @@ function MEEQSViewModel() {
 	]);
 	
 	this.categories = ko.computed(function() {
-		return $.map(that.categorieTypes(), function(category) {
+		return $.map(this.categorieTypes(), function(category) {
 			return {
 				hardRating: ko.observable(-1),
 				softRating: ko.observable(-1),
@@ -25,10 +25,11 @@ function MEEQSViewModel() {
 				categoryName: category
 			};
 		});
-	});
+	}, this);
 
 	this.restaurants = ko.observableArray(['a', 'asdf', 'xcxz']);
 	this.selectedRestaurant = ko.observable('');
+	this.newRestaurant = ko.observable('');
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -62,6 +63,13 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 			}
 		}
 	});
+}
+
+MEEQSViewModel.prototype.addRestaurant = function() {
+	if(this.newRestaurant() !== '') {
+		this.restaurants.push(this.newRestaurant());
+		this.newRestaurant('');
+	}
 }
 
 MEEQSViewModel.prototype.submitRating = function() {
