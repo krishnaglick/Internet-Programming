@@ -1,43 +1,58 @@
-<div class="ui centered grid" style="margin-top: 1%;">
-	<div class="one wide mobile column eight wide computer tablet column">
+<div class="ui stackable grid" style="margin-top: 1%;">
+	<div class="one wide column"></div>
+	<div class="seven wide column">
 		<div class="ui small form">
 			<h3 class="ui header">MEEQS</h3>
-
-			<div class="six wide field">
-				<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
-					<input type="hidden" data-bind="value: selectedRestaurant" />
-					<div class="default text">Select or Enter a Restaurant</div>
-					<i class="dropdown icon"></i>
-					<div class="menu" data-bind="foreach: restaurants">
-						<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
-					</div>
-				</div>
-				<div class="compact inverted green ui button">Add Restaurant</div>
+			<div class="ui top attached tabular menu">
+				<a class="active item" data-tab="Rate">Rate</a>
+				<a class="item" data-tab="List">List</a>
+				<a class="item" data-tab="Add">Add</a>
+				<a class="item" data-tab="Administration" data-bind="visible: isAdministrator">Administration</a>
 			</div>
 
-			<div data-bind="foreach: categories">
-				<div class="two fields">
-					<div class="two wide field">
-						<span data-bind="text: categoryName"></span>
+			<div class="ui bottom attached active tab segment" data-tab="Rate">
+				<div class="six wide field">
+					<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
+						<input type="hidden" data-bind="value: selectedRestaurant" />
+						<div class="default text">Select or Enter a Restaurant</div>
+						<i class="dropdown icon"></i>
+						<div class="menu" data-bind="foreach: restaurants">
+							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+						</div>
 					</div>
-					<div class="two wide field">
-						<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
-						<span data-bind="foreach: new Array($root.numberOfStars())">
-							<i class="green star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: { empty: $parent.isStarSelected($index()) }"></i>
-						</span>
+				</div>
+				<div data-bind="foreach: categories">
+					<div class="two fields">
+						<div class="two wide field">
+							<span data-bind="text: categoryName"></span>
+						</div>
+						<div class="two wide field">
+							<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
+							<span data-bind="foreach: new Array($root.numberOfStars())">
+								<i class="green star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: { empty: $parent.isStarSelected($index()) }"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="inline fields" style="min-width: 190px;">
+					<div class="field">
+						<div class="ui inverted green button" data-bind="click: submitRating">Submit</div>
+					</div>
+					<div class="field">
+						<div class="ui inverted red button" data-bind="click: clearForm">Clear</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="inline fields" style="min-width: 190px;">
-				<div class="field">
-					<div class="ui inverted green button" data-bind="click: submitRating">Submit</div>
-				</div>
-				<div class="field">
-					<div class="ui inverted red button" data-bind="click: clearForm">Clear</div>
-				</div>
+			<div class="ui bottom attached tab segment" data-tab="List">
 			</div>
 
+			<div class="ui bottom attached tab segment" data-tab="Add">
+			</div>
+
+			<div class="ui bottom attached tab segment" data-tab="Administration">
+			</div>
 		</div>
 	</div>
 </div>

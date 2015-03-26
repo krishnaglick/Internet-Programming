@@ -30,6 +30,8 @@ function MEEQSViewModel() {
 	this.restaurants = ko.observableArray(['a', 'asdf', 'xcxz']);
 	this.selectedRestaurant = ko.observable('');
 	this.newRestaurant = ko.observable('');
+
+	this.isAdministrator = ko.observable(true);
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {

@@ -8,5 +8,6 @@ $(function() {
 		$('#clearButton').click(function() {
 			$('#restaurants.dropdown').dropdown('restore defaults');
 		});
+		$('.menu .item').tab();
 	});
 });
