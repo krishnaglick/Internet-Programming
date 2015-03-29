@@ -2,6 +2,7 @@ function HomeViewModel() {
 	this.username = ko.observable('');
 	this.password = ko.observable('');
 	this.authTicket = ko.observable('');
+	this.isAdministrator = ko.observable(false);
 	this.loggedIn = ko.observable(false);
 
 	this.ajaxHeaderMessage = ko.observable('');
@@ -35,6 +36,8 @@ HomeViewModel.prototype.login = function() {
 			that.authTicket(data.authTicket);
 			Cookies.set('username', that.username());
 			Cookies.set('authTicket', that.authTicket());
+			that.isAdministrator(data.isAdministrator);
+			Cookies.set('isAdministrator', that.isAdministrator());
 			that.loggedIn(true);
 			if('loadStockData' in window) {
 				loadStockData();
@@ -68,6 +71,8 @@ HomeViewModel.prototype.register = function() {
 			that.authTicket(data.authTicket);
 			Cookies.set('username', that.username());
 			Cookies.set('authTicket', that.authTicket());
+			that.isAdministrator(Boolean(data.isAdministrator));
+			Cookies.set('isAdministrator', that.isAdministrator());
 			that.loggedIn(true);
 			if('loadStockData' in window) {
 				stock_portfolio_view_model.saveStocks(stock_portfolio_view_model);
@@ -103,8 +108,10 @@ HomeViewModel.prototype.logout = function() {
 HomeViewModel.prototype.clearCredentials = function() {
 	this.authTicket('');
 	this.username('');
+	this.isAdministrator(false);
 	Cookies.expire('username');
 	Cookies.expire('authTicket');
+	Cookies.expire('isAdministrator')
 	this.loggedIn(false);
 	if('loadStockData' in window) {
 		loadStockData();

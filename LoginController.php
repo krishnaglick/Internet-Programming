@@ -37,13 +37,15 @@
 		$statement->execute();
 
 		http_response_code(201); //User is created
-		echo json_encode(generateAuthTicket());
+		$userInformation = generateAuthTicket() + isUserAdministrator();
+		echo json_encode($userInformation);
 	}
 
 	function login() {
 		if(isUserInDatabase() > 0) {
 			http_response_code(200); //Things are okay
-			echo json_encode(generateAuthTicket());
+			$userInformation = generateAuthTicket() + isUserAdministrator();
+			echo json_encode($userInformation);
 		}
 		else {
 			http_response_code(406); //Bad input data

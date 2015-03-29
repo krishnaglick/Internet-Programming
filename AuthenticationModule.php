@@ -2,6 +2,19 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 
+	function isUserAdministrator() {
+		$statement = getDB()->prepare(getQuery("isAdmin"));
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->bindParam(':password', $_POST["password"]);
+		$statement->execute();
+		if($statement->fetch()['IsAdministrator'] == 1) {
+			return ['isAdministrator' => true];
+		}
+		else {
+			return ['isAdministrator' => false];
+		}
+	}
+
 	function updateAuthTicket($authTicket) {
 		$statement = getDB()->prepare(getQuery("updateTicket"));
 		$statement->bindParam(':authTicket', $authTicket);

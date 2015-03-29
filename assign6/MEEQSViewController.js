@@ -5,9 +5,12 @@ $(function() {
 
 	meeqs_view_model.loadRestaurants().complete(function() {
 		$('#restaurants.dropdown').dropdown();
+		$('#restaurantLocations.dropdown').dropdown();
 		$('#clearButton').click(function() {
 			$('#restaurants.dropdown').dropdown('restore defaults');
 		});
-		$('.menu .item').tab();
+		$('#meeqsTabs .item').tab();
 	});
+	meeqs_view_model.loadRestaurantTypes();
+	meeqs_view_model.loadRestaurantEthnicities();
 });

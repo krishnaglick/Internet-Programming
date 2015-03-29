@@ -18,7 +18,12 @@ Router.loadContent = function(route) {
 Router.registerRouting = function() {
 	window.addEventListener('hashchange', function(e) {
 		var route = window.location.href.split('#')[1];
-		if(route) { Router.loadContent(route); }
+		if(route) {
+			Router.loadContent(route);
+		}
+		else {
+			Router.loadContent('home');
+		}
 	});
 
 	$('[data-route]').click(function(element) {

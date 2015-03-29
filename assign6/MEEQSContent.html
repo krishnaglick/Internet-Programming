@@ -3,23 +3,33 @@
 	<div class="seven wide column">
 		<div class="ui small form">
 			<h3 class="ui header">MEEQS</h3>
-			<div class="ui top attached tabular menu">
+			<div id="meeqsTabs" class="ui top attached tabular menu">
 				<a class="active item" data-tab="Rate">Rate</a>
 				<a class="item" data-tab="List">List</a>
 				<a class="item" data-tab="Add">Add</a>
-				<a class="item" data-tab="Administration" data-bind="visible: isAdministrator">Administration</a>
+				<a class="item" data-tab="Administration" data-bind="visible: home_view_model.isAdministrator()">Administration</a>
 			</div>
 
 			<div class="ui bottom attached active tab segment" data-tab="Rate">
 				<div class="six wide field">
 					<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
 						<input type="hidden" data-bind="value: selectedRestaurant" />
-						<div class="default text">Select or Enter a Restaurant</div>
+						<div class="default text">Select a Restaurant</div>
 						<i class="dropdown icon"></i>
 						<div class="menu" data-bind="foreach: restaurants">
 							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
 						</div>
 					</div>
+
+					<div id="restaurantLocations" style="min-width: 220px;" class="ui fluid search selection dropdown" data-bind="visible: restaurantLocations().length > 1">
+						<input type="hidden" data-bind="value: restaurantLocation" />
+						<div class="default text">Pick Location</div>
+						<i class="dropdown icon"></i>
+						<div class="menu" data-bind="foreach: restaurantLocations">
+							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+						</div>
+					</div>
+					<div id="singleRestaurantLocation" data-bind="visible: restaurantLocations().length == 1, text: selectedRestaurant"></div>
 				</div>
 				<div data-bind="foreach: categories">
 					<div class="two fields">
@@ -27,9 +37,19 @@
 							<span data-bind="text: categoryName"></span>
 						</div>
 						<div class="two wide field" style="min-width: 88px;">
-							<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
+							<i class="thumbs down link icon" data-bind="event: {
+								mouseover: function() { $root.hoverHighlight(softRating, 0) },
+								mouseout: function() { $root.removeHighlight(softRating) }
+							},
+							click: function() { $root.clickHighlight(hardRating, 0) },
+							css: { outline: isZeroSelected() }"></i>
 							<span data-bind="foreach: new Array($root.numberOfStars())">
-								<i class="green star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: { empty: $parent.isStarSelected($index()) }"></i>
+								<i class="green star link icon" data-bind="event: {
+									mouseover: function() { $root.hoverHighlight($parent.softRating, $index()+1) },
+									mouseout: function() { $root.removeHighlight($parent.softRating) }
+								},
+								click: function() { $root.clickHighlight($parent.hardRating, $index()+1) },
+								css: { empty: $parent.isStarSelected($index()+1) }"></i>
 							</span>
 						</div>
 					</div>

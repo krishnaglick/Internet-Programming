@@ -1,7 +1,7 @@
 function MEEQSViewModel() {
 	this.numberOfStars = ko.observable(3);
 
-	this.categorieTypes = ko.observableArray([
+	this.categoryTypes = ko.observableArray([
 		'Menu',
 		'Enviroment',
 		'Cost Efficiency',
@@ -10,16 +10,24 @@ function MEEQSViewModel() {
 	]);
 	
 	this.categories = ko.computed(function() {
-		return $.map(this.categorieTypes(), function(category) {
+		return $.map(this.categoryTypes(), function(category) {
 			return {
 				hardRating: ko.observable(-1),
 				softRating: ko.observable(-1),
 				isStarSelected: function(index) {
-					if(this.softRating() == -1) {
+					if(this.softRating() < 0) {
 						return this.hardRating() < index;
 					}
 					else {
 						return this.softRating() < index;
+					}
+				},
+				isZeroSelected: function() {
+					if(this.softRating() == 0) {
+						return false;
+					}
+					else {
+						return this.hardRating() != 0;
 					}
 				},
 				categoryName: category
@@ -27,11 +35,44 @@ function MEEQSViewModel() {
 		});
 	}, this);
 
-	this.restaurants = ko.observableArray(['a', 'asdf', 'xcxz']);
-	this.selectedRestaurant = ko.observable('');
-	this.newRestaurant = ko.observable('');
+	this.restaurantData = ko.observable({
+		a: [
+			'123 st',
+			'456 ave',
+			'789 rd'
+		],
+		b: [
+			'hodges lane',
+			'qq ave'
+		],
+		c: [
+			'zz rd'
+		]
+	});
 
-	this.isAdministrator = ko.observable(true);
+	this.restaurants = ko.computed(function() {
+		return Object.keys(this.restaurantData());
+	}, this);
+
+	this.selectedRestaurant = ko.observable('');
+
+	this.restaurantEthnicites = ko.observableArray([]);
+	this.restaurantTypes = ko.observableArray([]);
+
+	this.restaurantLocation = ko.observable('');
+	this.restaurantLocations = ko.computed(function() {
+		if(this.selectedRestaurant() !== '') {
+			$('#restaurantLocations.dropdown').dropdown('restore defaults');
+			var restaurantLocations = this.restaurantData()[this.selectedRestaurant()];
+			if(restaurantLocations.length == 1) {
+				this.selectedRestaurant(restaurantLocations[0]);
+			}
+			return restaurantLocations;
+		}
+		else {
+			return [];
+		}
+	}, this);
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -44,6 +85,46 @@ MEEQSViewModel.prototype.clickHighlight = function(hardRating, index) {
 
 MEEQSViewModel.prototype.removeHighlight = function(softRating) {
 	softRating(-1);
+}
+
+MEEQSViewModel.prototype.loadRestaurantEthnicities = function() {
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({ ajaxRoute: 'getRestaurantEthnicities' }),
+		success: function(data) {
+			if(data.length > 0) {
+				meeqs_view_model.restaurantEthnicites($.map(data, function(val) {
+					return val.RestaurantEthnicityName;
+				}));
+			}
+		},
+		error: function(data) {
+			showMessage(false, 'Error', 'There was a server error, please refresh the page!');
+		}
+	});
+}
+
+MEEQSViewModel.prototype.loadRestaurantTypes = function() {
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({ ajaxRoute: 'getRestaurantTypes' }),
+		success: function(data) {
+			if(data.length > 0) {
+				meeqs_view_model.restaurantTypes($.map(data, function(val) {
+					return val.RestaurantTypeName;
+				}));
+			}
+		},
+		error: function(data) {
+			showMessage(false, 'Error', 'There was a server error, please refresh the page!');
+		}
+	});
 }
 
 MEEQSViewModel.prototype.loadRestaurants = function() {
@@ -60,9 +141,7 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 			}
 		},
 		error: function(data) {
-			if(data.status === 500) {
-				showMessage(false, 'Error', 'There was a server error, please refresh the page!');
-			}
+			showMessage(false, 'Error', 'There was a server error, please refresh the page!');
 		}
 	});
 }

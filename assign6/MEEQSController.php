@@ -10,6 +10,8 @@
 		if (isset($_POST["ajaxRoute"]) && !empty($_POST["ajaxRoute"])) {
 			switch($_POST["ajaxRoute"]) {
 				case "rateRestaurant": rateRestaurant(); break;
+				case "getRestaurantEthnicities": getRestaurantEthnicities(); break;
+				case "getRestaurantTypes": getRestaurantTypes(); break;
 				case "getRestaurantRatings": getRestaurantRatings(); break;
 				case "getRestaurantNames": getRestaurantNames(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
@@ -17,6 +19,22 @@
 				default: echo json_encode(["error" => "Bad Route!"]); break;
 			}
 		}
+	}
+
+	function getRestaurantEthnicities() {
+		$statement = getDB()->prepare(getQuery("getRestaurantEthnicities"));
+		$statement->execute();
+
+		http_response_code(200); //Things are okay
+		echo json_encode($statement->fetchAll());
+	}
+
+	function getRestaurantTypes() {
+		$statement = getDB()->prepare(getQuery("getRestaurantTypes"));
+		$statement->execute();
+
+		http_response_code(200); //Things are okay
+		echo json_encode($statement->fetchAll());
 	}
 
 	function getRestaurantDetails() {
