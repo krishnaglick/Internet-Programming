@@ -23,10 +23,10 @@
 				</div>
 				<div data-bind="foreach: categories">
 					<div class="two fields">
-						<div class="two wide field">
+						<div class="two wide field" style="min-width: 88px;">
 							<span data-bind="text: categoryName"></span>
 						</div>
-						<div class="two wide field">
+						<div class="two wide field" style="min-width: 88px;">
 							<i class="cancel link icon" data-bind="click: $root.clickHighlight(hardRating, -1)"></i>
 							<span data-bind="foreach: new Array($root.numberOfStars())">
 								<i class="green star link icon" data-bind="event: { mouseover: function() { $root.hoverHighlight($parent.softRating, $index()) }, mouseout: function() { $root.removeHighlight($parent.softRating) }, click: function() { $root.clickHighlight($parent.hardRating, $index()) } }, css: { empty: $parent.isStarSelected($index()) }"></i>
