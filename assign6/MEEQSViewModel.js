@@ -9,7 +9,7 @@ function MEEQSViewModel() {
 		'Service'
 	]);
 	
-	this.categories = ko.computed(function() {
+	this.rating = ko.computed(function() {
 		return $.map(this.categoryTypes(), function(category) {
 			return {
 				hardRating: ko.observable(-1),
@@ -35,20 +35,7 @@ function MEEQSViewModel() {
 		});
 	}, this);
 
-	this.restaurantData = ko.observable({
-		a: [
-			'123 st',
-			'456 ave',
-			'789 rd'
-		],
-		b: [
-			'hodges lane',
-			'qq ave'
-		],
-		c: [
-			'zz rd'
-		]
-	});
+	this.restaurantData = ko.observable({});
 
 	this.restaurants = ko.computed(function() {
 		return Object.keys(this.restaurantData());
@@ -63,7 +50,9 @@ function MEEQSViewModel() {
 	this.restaurantLocations = ko.computed(function() {
 		if(this.selectedRestaurant() !== '') {
 			$('#restaurantLocations.dropdown').dropdown('restore defaults');
-			var restaurantLocations = this.restaurantData()[this.selectedRestaurant()];
+			var restaurantLocations = $.map(this.restaurantData()[this.selectedRestaurant()], function(val) {
+				return val.StreetAddress;
+			});
 			if(restaurantLocations.length == 1) {
 				this.selectedRestaurant(restaurantLocations[0]);
 			}
@@ -73,6 +62,8 @@ function MEEQSViewModel() {
 			return [];
 		}
 	}, this);
+
+	this.restaurantComment = ko.observable('');
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -128,16 +119,27 @@ MEEQSViewModel.prototype.loadRestaurantTypes = function() {
 }
 
 MEEQSViewModel.prototype.loadRestaurants = function() {
+	var that = this;
 	return $.ajax({
 		type: "POST",
 		dataType: "JSON",
 		contentType: "application/json",
 		url: "assign6/MEEQSController.php",
 		//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
-		data: ko.toJSON({ ajaxRoute: 'getRestaurantNames' }),
+		data: ko.toJSON({ ajaxRoute: 'getRestaurantData' }),
 		success: function(data) {
 			if(data.length > 0) {
-				meeqs_view_model.restaurants(data);
+				data.forEach(function(val) {
+					if(!(val.RestaurantName in that.restaurantData())) {
+						that.restaurantData()[val.RestaurantName] = [];
+					}
+					that.restaurantData()[val.RestaurantName].push({
+						StreetAddress: val.RestaurantStreetAddress,
+						LocationID: val.RestaurantLocationID
+					});
+				});
+
+				that.restaurantData.valueHasMutated();
 			}
 		},
 		error: function(data) {
@@ -154,8 +156,31 @@ MEEQSViewModel.prototype.addRestaurant = function() {
 }
 
 MEEQSViewModel.prototype.submitRating = function() {
-	if(typeof this.selectedRestaurant() !== 'undefined' && this.selectedRestaurant() != '') {
-
+	if(this.selectedRestaurant() !== '' && this.restaurantLocation() !== '') {
+		return $.ajax({
+			type: "POST",
+			dataType: "JSON",
+			contentType: "application/json",
+			url: "assign6/MEEQSController.php",
+			//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
+			data: ko.toJSON({
+				ajaxRoute: 'rateRestaurant',
+				restaurantName: this.restaurantName,
+				username: home_view_model.username,
+				restaurantLocationID: this.restaurantLocation,
+				menuRating: this.rating()[0].hardRating,
+				enviromentRating: this.rating()[1].hardRating,
+				costRating: this.rating()[2].hardRating,
+				qualityRating: this.rating()[3].hardRating,
+				serviceRating: this.rating()[4].hardRating,
+				comment: this.restaurantComment
+			}),
+			success: function(data) {
+				debugger;
+			},
+			error: function(data) {
+			}
+		});
 	}
 }
 

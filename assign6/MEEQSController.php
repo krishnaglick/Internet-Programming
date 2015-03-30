@@ -13,7 +13,7 @@
 				case "getRestaurantEthnicities": getRestaurantEthnicities(); break;
 				case "getRestaurantTypes": getRestaurantTypes(); break;
 				case "getRestaurantRatings": getRestaurantRatings(); break;
-				case "getRestaurantNames": getRestaurantNames(); break;
+				case "getRestaurantData": getRestaurantData(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
 				case "deleteRestaurant": deleteRestaurant(); break;
 				default: echo json_encode(["error" => "Bad Route!"]); break;
@@ -37,22 +37,9 @@
 		echo json_encode($statement->fetchAll());
 	}
 
-	function getRestaurantDetails() {
-		return [
-			name => $_POST["restaurantName"],
-			ratings => [
-				menu => $_POST["menuRating"],
-				enviroment => $_POST["enviromentRating"],
-				cost => $_POST["costRating"],
-				quality => $_POST["qualityRating"],
-				service => $_POST["serviceRating"],
-			]
-		];
-	}
-
 	function userHasRatedRestaurant() {
 		$statement = getDB()->prepare(getQuery("userHasRatedRestaurant"));
-		$statement->bindParam(':restaurantName', getRestaurantDetails()['name']);
+		$statement->bindParam(':restaurantLocationID', $_POST['restaurantLocationID']);
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->execute();
 		return $statement->rowCount() > 0;
@@ -61,44 +48,69 @@
 	function updateRestaurantRating() {
 		$statement = getDB()->prepare(getQuery("updateRestaurantRating"));
 		$statement->bindParam(':username', $_POST["username"]);
-		$statement->bindParam(':restaurantName', getRestaurantDetails()['name']);
-		$statement->bindParam(':menuRating', getRestaurantDetails()['menu']);
-		$statement->bindParam(':enviromentRating', getRestaurantDetails()['enviroment']);
-		$statement->bindParam(':costRating', getRestaurantDetails()['cost']);
-		$statement->bindParam(':qualityRating', getRestaurantDetails()['quality']);
-		$statement->bindParam(':serviceRating', getRestaurantDetails()['service']);
+		$statement->bindParam(':restaurantLocationID', $_POST['restaurantLocationID']);
+		$statement->bindParam(':menuRating', $_POST['menuRating']);
+		$statement->bindParam(':enviromentRating', $_POST['enviromentRating']);
+		$statement->bindParam(':costRating', $_POST['costRating']);
+		$statement->bindParam(':qualityRating', $_POST['qualityRating']);
+		$statement->bindParam(':serviceRating', $_POST['serviceRating']);
+		$statement->bindParam(':comment', $_POST['comment']);
 		$statement->execute();
 	}
 
 	function restaurantExists() {
 		$statement = getDB()->prepare(getQuery("doesRestaurantExist"));
-		$statement->bindParam(':restaurantName', getRestaurantDetails()['name']);
+		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
 		$statement->execute();
 		return $statement->rowCount() > 0;
 	}
 
 	function getRestaurantID() {
 		$statement = getDB()->prepare(getQuery("getRestaurantID"));
-		$statement->bindParam(':restaurantName', getRestaurantDetails()['name']);
+		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
 		return $statement->fetch();
 	}
 
 	function createRestaurant() {
-		$statement = getDB()->prepare(getQuery("saveRestaurantName"));
-		$statement->bindParam(':restaurantName', getRestaurantDetails()['name']);
+		$statement = getDB()->prepare(getQuery("createRestaurant"));
+		$guid = generateGUID();
+		$statement->bindParam(':restaurantID', $guid);
+		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
+		$statement->bindParam(':restaurantTypeID', $_POST['restaurantTypeID']);
+		$statement->bindParam(':restaurantEthnicityID', $_POST['restaurantEthnicityID']);
+		if(isUserAdministrator()[0]) {
+			$statement->bindParam(':isApproved', 1);
+		}
+		else {
+			$statement->bindParam(':isApproved', 0);
+		}
 		$statement->execute();
-		return mysql_insert_id();
+		return $guid;
 	}
 
-	function createRestaurantRating($restaurantID) {
-		$statement = getDB()->prepare(getQuery("saveRestaurantRating"));
-		$statement->bindParam(':username', $_POST["username"]);
+	function createRestaurantLocation($restaurantID) {
+		$statement = getDB()->prepare(getQuery("createRestaurantLocation"));
+		$guid = generateGUID();
+		$statement->bindParam(':restaurantLocationID', $guid);
 		$statement->bindParam(':restaurantID', $restaurantID);
-		$statement->bindParam(':menuRating', getRestaurantDetails()['menu']);
-		$statement->bindParam(':enviromentRating', getRestaurantDetails()['enviroment']);
-		$statement->bindParam(':costRating', getRestaurantDetails()['cost']);
-		$statement->bindParam(':qualityRating', getRestaurantDetails()['quality']);
-		$statement->bindParam(':serviceRating', getRestaurantDetails()['service']);
+		$statement->bindParam(':restaurantID', $_POST['restaurantCity']);
+		$statement->bindParam(':restaurantID', $_POST['restaurantState']);
+		$statement->bindParam(':restaurantID', $_POST['restaurantZip']);
+		$statement->bindParam(':restaurantID', $_POST['restaurantStreetAddress']);
+		$statement->execute();
+		return $guid;
+	}
+
+	function createRestaurantRating($restaurantLocationID) {
+		$statement = getDB()->prepare(getQuery("createRestaurantRating"));
+		$statement->bindParam(':username', $_POST["username"]);
+		$statement->bindParam(':restaurantLocationID', $restaurantLocationID);
+		$statement->bindParam(':menuRating', $_POST['menu']);
+		$statement->bindParam(':enviromentRating', $_POST['enviroment']);
+		$statement->bindParam(':costRating', $_POST['cost']);
+		$statement->bindParam(':qualityRating', $_POST['quality']);
+		$statement->bindParam(':serviceRating', $_POST['service']);
+		$statement->bindParam(':comment', $_POST['comment']);
 		$statement->execute();
 	}
 
@@ -113,12 +125,12 @@
 			else {
 				$restaurantID = createRestaurant();
 			}
-			createRestaurantRating($restaurantID);
+			createRestaurantRating(createRestaurantLocation($restaurantID));
 		}
 	}
 
-	function getRestaurantNames() {
-		$statement = getDB()->prepare(getQuery("getRestaurantNames"));
+	function getRestaurantData() {
+		$statement = getDB()->prepare(getQuery("getRestaurantData"));
 		$statement->execute();
 		echo json_encode($statement->fetchAll());
 	}

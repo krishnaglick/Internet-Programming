@@ -5,7 +5,6 @@
 	function isUserAdministrator() {
 		$statement = getDB()->prepare(getQuery("isAdmin"));
 		$statement->bindParam(':username', $_POST["username"]);
-		$statement->bindParam(':password', $_POST["password"]);
 		$statement->execute();
 		if($statement->fetch()['IsAdministrator'] == 1) {
 			return ['isAdministrator' => true];
