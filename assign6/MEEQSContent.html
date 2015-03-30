@@ -29,7 +29,10 @@
 							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
 						</div>
 					</div>
-					<div id="singleRestaurantLocation" data-bind="visible: restaurantLocations().length == 1, text: selectedRestaurant"></div>
+					<span data-bind="visible: restaurantLocations().length == 1">
+						<i class="marker icon"></i>
+						<span id="singleRestaurantLocation" data-bind="text: selectedRestaurant"></span>
+					</span>
 				</div>
 				<div data-bind="foreach: rating">
 					<div class="two fields">

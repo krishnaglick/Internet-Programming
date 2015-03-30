@@ -63,6 +63,33 @@ function MEEQSViewModel() {
 		}
 	}, this);
 
+	this.restaurantLocationID = ko.computed(function() {
+		if(this.restaurantLocation() === '') {
+			return '';
+		}
+
+		if(this.restaurantData()[this.selectedRestaurant()].length == 1) {
+			return this.restaurantData()[this.selectedRestaurant].LocationID;
+		}
+		else {
+			var that = this;
+			var locationID = '';
+			this.restaurantData()[this.selectedRestaurant()].forEach(function(val) {
+				if(val.StreetAddress == that.restaurantLocation()) {
+					locationID = val.LocationID;
+				}
+			});
+			return locationID;
+		}
+	}, this);
+	
+	this.restaurantLocationID.subscribe(function() {
+		var that = this;
+		if(this.restaurantLocationID !== '') {
+			that.loadPreviousRating();
+		}
+	});
+
 	this.restaurantComment = ko.observable('');
 }
 
@@ -148,6 +175,27 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 	});
 }
 
+MEEQSViewModel.prototype.loadPreviousRating = function() {
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
+		data: ko.toJSON({
+			ajaxRoute: 'loadPreviousRating',
+			restaurantName: this.restaurantName,
+			username: home_view_model.username,
+			restaurantLocationID: this.restaurantLocationID,
+		}),
+		success: function(data) {
+			//Set ratings
+		},
+		error: function(data) {
+		}
+	});
+}
+
 MEEQSViewModel.prototype.addRestaurant = function() {
 	if(this.newRestaurant() !== '') {
 		this.restaurants.push(this.newRestaurant());
@@ -185,11 +233,12 @@ MEEQSViewModel.prototype.submitRating = function() {
 }
 
 MEEQSViewModel.prototype.clearForm = function() {
-	this.categories().forEach(function(val) {
+	this.rating().forEach(function(val) {
 		val.hardRating(-1);
 		val.softRating(-1);
 	});
 
 	this.selectedRestaurant('');
+	this.restaurantLocation('');
 	$('#restaurants.dropdown').dropdown('restore defaults');
 }
