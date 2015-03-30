@@ -31,6 +31,7 @@
 				'getRestaurantData' => "SELECT RestaurantName, RestaurantLocationID, RestaurantStreetAddress from Restaurants INNER JOIN RestaurantLocations ON Restaurants.RestaurantID = RestaurantLocations.RestaurantID WHERE IsApproved = 1",
 				'getRestaurantEthnicities' => "SELECT RestaurantEthnicityName FROM RestaurantEthnicities",
 				'getRestaurantTypes' => "SELECT RestaurantTypeName FROM RestaurantTypes",
+				'getPreviousUserRating' => "SELECT Menu, Environment, Cost, Quality, Service, Comment FROM RestaurantRatings WHERE Username = :username and RestaurantLocationID = :restaurantLocationID",
 				'updateRestaurantRating' => "UPDATE RestaurantRatings SET Menu = :menuRating, Enviroment = :enviromentRating, Cost = :costRating, Quality = :qualityRating, Service = :serviceRating, Comment = :comment WHERE RestaurantLocationID = :restaurantLocationID AND Username = :username",
 				'deleteRestaurant' => "DELETE FROM Restaurants WHERE RestaurantName = :restaurantName",
 			];

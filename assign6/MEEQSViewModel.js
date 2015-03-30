@@ -3,7 +3,7 @@ function MEEQSViewModel() {
 
 	this.categoryTypes = ko.observableArray([
 		'Menu',
-		'Enviroment',
+		'Environment',
 		'Cost Efficiency',
 		'Food Quality',
 		'Service'
@@ -82,15 +82,8 @@ function MEEQSViewModel() {
 			return locationID;
 		}
 	}, this);
-	
-	this.restaurantLocationID.subscribe(function() {
-		var that = this;
-		if(this.restaurantLocationID !== '') {
-			that.loadPreviousRating();
-		}
-	});
 
-	this.restaurantComment = ko.observable('');
+	this.comment = ko.observable('');
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -175,21 +168,26 @@ MEEQSViewModel.prototype.loadRestaurants = function() {
 	});
 }
 
-MEEQSViewModel.prototype.loadPreviousRating = function() {
+MEEQSViewModel.prototype.getPreviousUserRating = function() {
+	var that = this;
 	return $.ajax({
 		type: "POST",
 		dataType: "JSON",
 		contentType: "application/json",
 		url: "assign6/MEEQSController.php",
-		//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
 		data: ko.toJSON({
-			ajaxRoute: 'loadPreviousRating',
-			restaurantName: this.restaurantName,
+			ajaxRoute: 'getPreviousUserRating',
 			username: home_view_model.username,
-			restaurantLocationID: this.restaurantLocationID,
+			restaurantLocationID: that.restaurantLocationID,
 		}),
 		success: function(data) {
-			//Set ratings
+			//I am a bad, bad man.
+			that.rating()[0].hardRating(data['Menu']);
+			that.rating()[1].hardRating(data['Environment']);
+			that.rating()[2].hardRating(data['Cost']);
+			that.rating()[3].hardRating(data['Quality']);
+			that.rating()[4].hardRating(data['Service']);
+			that.comment(data['Comment']);
 		},
 		error: function(data) {
 		}
@@ -217,16 +215,15 @@ MEEQSViewModel.prototype.submitRating = function() {
 				username: home_view_model.username,
 				restaurantLocationID: this.restaurantLocation,
 				menuRating: this.rating()[0].hardRating,
-				enviromentRating: this.rating()[1].hardRating,
+				EnvironmentRating: this.rating()[1].hardRating,
 				costRating: this.rating()[2].hardRating,
 				qualityRating: this.rating()[3].hardRating,
 				serviceRating: this.rating()[4].hardRating,
 				comment: this.restaurantComment
 			}),
-			success: function(data) {
-				debugger;
-			},
+			success: function() {},
 			error: function(data) {
+				showMessage(false, 'Error', 'Please try submitting the rating again!');
 			}
 		});
 	}

@@ -1,13 +1,21 @@
+SET FOREIGN_KEY_CHECKS = 0;
+truncate RestaurantRatings;
+truncate RestaurantLocations;
+truncate Restaurants;
+truncate RestaurantTypes;
+truncate RestaurantEthnicities;
+SET FOREIGN_KEY_CHECKS = 1;
+
 INSERT INTO RestaurantTypes
-VALUES (uuid(), 'Sit-Down'),
+VALUES ('8f5a1811-d661-11e4-9b5d-bc5ff4664825', 'Sit-Down'),
 (uuid(), 'Buffet'),
-(uuid(), 'Diner'),
+('8f5ca190-d661-11e4-9b5d-bc5ff4664825', 'Diner'),
 (uuid(), 'Fast Food');
 
 INSERT INTO RestaurantEthnicities
-VALUES (uuid(), 'Mexican'),
-(uuid(), 'American'),
-(uuid(), 'Asian'),
+VALUES ('052505b6-d662-11e4-9b5d-bc5ff4664825', 'Mexican'),
+('0528f6ff-d662-11e4-9b5d-bc5ff4664825', 'American'),
+('0528f84b-d662-11e4-9b5d-bc5ff4664825', 'Asian'),
 (uuid(), 'Italian');
 
 INSERT INTO Restaurants
@@ -39,28 +47,28 @@ VALUES (
 
 INSERT INTO RestaurantLocations
 VALUES (
-	uuid(),
+	'87ab75b0-d680-11e4-9b5d-bc5ff4664825',
     (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Seasons of Japan'),
     'Jacksonville',
     'Florida',
     '32246',
     '4413 Town Center Parkway'
 ), (
-	uuid(),
+	'87ae8380-d680-11e4-9b5d-bc5ff4664825',
     (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Tijuana Flats'),
     'Jacksonville',
     'Florida',
     '32224',
     '13529 Beach Boulevard'
 ), (
-	uuid(),
+	'87ae84c2-d680-11e4-9b5d-bc5ff4664825',
     (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Tijuana Flats'),
     'Jacksonville',
     'Florida',
     '32224',
     '2025 Riverside Avenue'
 ), (
-	uuid(),
+	'87ae854c-d680-11e4-9b5d-bc5ff4664825',
     (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Moxie'),
     'Jacksonville',
     'Florida',

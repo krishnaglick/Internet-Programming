@@ -13,4 +13,10 @@ $(function() {
 	});
 	meeqs_view_model.loadRestaurantTypes();
 	meeqs_view_model.loadRestaurantEthnicities();
+
+	meeqs_view_model.restaurantLocationID.subscribe(function() {
+		if(meeqs_view_model.restaurantLocationID() !== '') {
+			meeqs_view_model.getPreviousUserRating();
+		}
+	});	
 });

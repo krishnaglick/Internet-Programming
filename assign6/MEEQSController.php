@@ -14,6 +14,7 @@
 				case "getRestaurantTypes": getRestaurantTypes(); break;
 				case "getRestaurantRatings": getRestaurantRatings(); break;
 				case "getRestaurantData": getRestaurantData(); break;
+				case "getPreviousUserRating": getPreviousUserRating(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
 				case "deleteRestaurant": deleteRestaurant(); break;
 				default: echo json_encode(["error" => "Bad Route!"]); break;
@@ -35,6 +36,17 @@
 
 		http_response_code(200); //Things are okay
 		echo json_encode($statement->fetchAll());
+	}
+
+	function getPreviousUserRating() {
+		if(userHasRatedRestaurant()) {
+			$statement = getDB()->prepare(getQuery("getPreviousUserRating"));
+			$statement->bindParam(':restaurantLocationID', $_POST['restaurantLocationID']);
+			$statement->bindParam(':username', $_POST["username"]);
+			$statement->execute();
+			http_response_code(200); //Things are okay
+			echo json_encode($statement->fetch());
+		}
 	}
 
 	function userHasRatedRestaurant() {
@@ -105,11 +117,11 @@
 		$statement = getDB()->prepare(getQuery("createRestaurantRating"));
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->bindParam(':restaurantLocationID', $restaurantLocationID);
-		$statement->bindParam(':menuRating', $_POST['menu']);
-		$statement->bindParam(':enviromentRating', $_POST['enviroment']);
-		$statement->bindParam(':costRating', $_POST['cost']);
-		$statement->bindParam(':qualityRating', $_POST['quality']);
-		$statement->bindParam(':serviceRating', $_POST['service']);
+		$statement->bindParam(':menuRating', $_POST['menuRating']);
+		$statement->bindParam(':enviromentRating', $_POST['enviromentRating']);
+		$statement->bindParam(':costRating', $_POST['costRating']);
+		$statement->bindParam(':qualityRating', $_POST['qualityRating']);
+		$statement->bindParam(':serviceRating', $_POST['serviceRating']);
 		$statement->bindParam(':comment', $_POST['comment']);
 		$statement->execute();
 	}
@@ -126,6 +138,8 @@
 				$restaurantID = createRestaurant();
 			}
 			createRestaurantRating(createRestaurantLocation($restaurantID));
+			http_response_code(201); //Things are created
+			echo json_encode([result => 'success']);
 		}
 	}
 
