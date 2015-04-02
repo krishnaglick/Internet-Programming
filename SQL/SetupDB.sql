@@ -17,11 +17,12 @@ CREATE TABLE IF NOT EXISTS `Stocks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `AuthenticationTickets` (
-  `AuthenticationTicket` VARCHAR(36) NOT NULL,
-  `LastAccessedTime` DATETIME NOT NULL,
-  PRIMARY KEY (`AuthenticationTicket`),
-  UNIQUE KEY `AuthenticationTicket_UNIQUE` (`AuthenticationTicket`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    `AuthenticationTicket` VARCHAR(36) NOT NULL,
+    `LastAccessedTime` DATETIME NOT NULL,
+    `IsAdministrator` TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`AuthenticationTicket`),
+    UNIQUE KEY `AuthenticationTicket_UNIQUE` (`AuthenticationTicket`)
+)  ENGINE=INNODB DEFAULT CHARSET=LATIN1;
 
 CREATE TABLE IF NOT EXISTS `RestaurantTypes` (
   `RestaurantTypeID` VARCHAR(36) NOT NULL,

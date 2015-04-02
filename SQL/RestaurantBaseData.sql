@@ -1,44 +1,36 @@
-SET FOREIGN_KEY_CHECKS = 0;
-truncate RestaurantRatings;
-truncate RestaurantLocations;
-truncate Restaurants;
-truncate RestaurantTypes;
-truncate RestaurantEthnicities;
-SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO RestaurantTypes
 VALUES ('8f5a1811-d661-11e4-9b5d-bc5ff4664825', 'Sit-Down'),
-(uuid(), 'Buffet'),
+('8f5ca039-d661-11e4-9b5d-bc5ff4664825', 'Buffet'),
 ('8f5ca190-d661-11e4-9b5d-bc5ff4664825', 'Diner'),
-(uuid(), 'Fast Food');
+('8f5ca22d-d661-11e4-9b5d-bc5ff4664825', 'Fast Food');
 
 INSERT INTO RestaurantEthnicities
 VALUES ('052505b6-d662-11e4-9b5d-bc5ff4664825', 'Mexican'),
 ('0528f6ff-d662-11e4-9b5d-bc5ff4664825', 'American'),
 ('0528f84b-d662-11e4-9b5d-bc5ff4664825', 'Asian'),
-(uuid(), 'Italian');
+('0528f8d5-d662-11e4-9b5d-bc5ff4664825', 'Italian');
 
 INSERT INTO Restaurants
 VALUES (
-	uuid(),
+	'5f1bdfa6-d67f-11e4-9b5d-bc5ff4664825',
     'Seasons of Japan',
     '8f5ca190-d661-11e4-9b5d-bc5ff4664825', #Diner
     '0528f84b-d662-11e4-9b5d-bc5ff4664825', #Asian
     1
 ), (
-	uuid(),
+	'5f211df0-d67f-11e4-9b5d-bc5ff4664825',
     'Chipotle',
     '8f5ca190-d661-11e4-9b5d-bc5ff4664825', #Diner
     '052505b6-d662-11e4-9b5d-bc5ff4664825', #Mexican
     1
 ), (
-	uuid(),
+	'5f211f7b-d67f-11e4-9b5d-bc5ff4664825',
     'Tijuana Flats',
     '8f5ca190-d661-11e4-9b5d-bc5ff4664825', #Diner
     '052505b6-d662-11e4-9b5d-bc5ff4664825', #Mexican
     1
 ), (
-	uuid(),
+	'5f212017-d67f-11e4-9b5d-bc5ff4664825',
     'Moxie',
     '8f5a1811-d661-11e4-9b5d-bc5ff4664825', #Sit-Down
     '0528f6ff-d662-11e4-9b5d-bc5ff4664825', #American
