@@ -7,10 +7,10 @@
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->execute();
 		if($statement->fetch()['IsAdministrator'] == 1) {
-			return ['isAdministrator' => true];
+			return true;
 		}
 		else {
-			return ['isAdministrator' => false];
+			return false;
 		}
 	}
 
@@ -20,12 +20,16 @@
 		$statement->execute();
 	}
 
-	function generateAuthTicket() {
+	function generateAuthTicket($isAdmin) {
 		$guid = generateGUID();
 		$statement = getDB()->prepare(getQuery("createTicket"));
 		$statement->bindParam(':authTicket', $guid);
+		$statement->bindParam(':isAdmin', $isAdmin);
 		if($statement->execute()) {
-			return ['authTicket' => $guid];
+			return [
+					'authTicket' => $guid,
+					'isAdministrator' => $isAdmin
+					];
 		}
 		else {
 			http_response_code(500); //DB Error

@@ -16,13 +16,13 @@
 						<input type="hidden" data-bind="value: selectedRestaurant" />
 						<div class="default text">Select a Restaurant</div>
 						<i class="dropdown icon"></i>
-						<div class="menu" data-bind="foreach: restaurants">
+						<div class="menu" data-bind="foreach: restaurantNames">
 							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
 						</div>
 					</div>
 
 					<div id="restaurantLocations" style="min-width: 220px;" class="ui fluid search selection dropdown" data-bind="visible: restaurantLocations().length > 1">
-						<input type="hidden" data-bind="value: restaurantLocation" />
+						<input type="hidden" data-bind="value: selectedRestaurantLocation" />
 						<div class="default text">Pick Location</div>
 						<i class="dropdown icon"></i>
 						<div class="menu" data-bind="foreach: restaurantLocations">
@@ -31,9 +31,10 @@
 					</div>
 					<span data-bind="visible: restaurantLocations().length == 1">
 						<i class="marker icon"></i>
-						<span id="singleRestaurantLocation" data-bind="text: selectedRestaurant"></span>
+						<span id="singleRestaurantLocation" data-bind="text: selectedRestaurantLocation"></span>
 					</span>
 				</div>
+
 				<div data-bind="foreach: rating">
 					<div class="two fields">
 						<div class="two wide field" style="min-width: 88px;">

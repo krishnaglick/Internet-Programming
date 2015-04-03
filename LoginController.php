@@ -37,14 +37,14 @@
 		$statement->execute();
 
 		http_response_code(201); //User is created
-		$userInformation = generateAuthTicket() + isUserAdministrator();
+		$userInformation = generateAuthTicket(isUserAdministrator());
 		echo json_encode($userInformation);
 	}
 
 	function login() {
 		if(isUserInDatabase() > 0) {
 			http_response_code(200); //Things are okay
-			$userInformation = generateAuthTicket() + isUserAdministrator();
+			$userInformation = generateAuthTicket(isUserAdministrator());
 			echo json_encode($userInformation);
 		}
 		else {

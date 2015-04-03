@@ -40,28 +40,28 @@ VALUES (
 INSERT INTO RestaurantLocations
 VALUES (
 	'87ab75b0-d680-11e4-9b5d-bc5ff4664825',
-    (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Seasons of Japan'),
+    '5f1bdfa6-d67f-11e4-9b5d-bc5ff4664825',
     'Jacksonville',
     'Florida',
     '32246',
     '4413 Town Center Parkway'
 ), (
 	'87ae8380-d680-11e4-9b5d-bc5ff4664825',
-    (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Tijuana Flats'),
+    '5f211f7b-d67f-11e4-9b5d-bc5ff4664825',
     'Jacksonville',
     'Florida',
     '32224',
     '13529 Beach Boulevard'
 ), (
 	'87ae84c2-d680-11e4-9b5d-bc5ff4664825',
-    (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Tijuana Flats'),
+    '5f211f7b-d67f-11e4-9b5d-bc5ff4664825',
     'Jacksonville',
     'Florida',
     '32224',
     '2025 Riverside Avenue'
 ), (
 	'87ae854c-d680-11e4-9b5d-bc5ff4664825',
-    (SELECT RestaurantID FROM Restaurants WHERE RestaurantName = 'Moxie'),
+    '5f212017-d67f-11e4-9b5d-bc5ff4664825',
     'Jacksonville',
     'Florida',
     '32246',

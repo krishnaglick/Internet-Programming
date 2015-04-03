@@ -13,13 +13,19 @@
 				case "getRestaurantEthnicities": getRestaurantEthnicities(); break;
 				case "getRestaurantTypes": getRestaurantTypes(); break;
 				case "getRestaurantRatings": getRestaurantRatings(); break;
-				case "getRestaurantData": getRestaurantData(); break;
+				case "getRestaurants": getRestaurants(); break;
 				case "getPreviousUserRating": getPreviousUserRating(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
 				case "deleteRestaurant": deleteRestaurant(); break;
 				default: echo json_encode(["error" => "Bad Route!"]); break;
 			}
 		}
+	}
+
+	function getRestaurants() {
+		$statement = getDB()->prepare(getQuery("getRestaurantData"));
+		$statement->execute();
+		echo json_encode($statement->fetchAll());
 	}
 
 	function getRestaurantEthnicities() {
@@ -40,12 +46,15 @@
 
 	function getPreviousUserRating() {
 		if(userHasRatedRestaurant()) {
-			$statement = getDB()->prepare(getQuery("getPreviousUserRating"));
+			$statement = getDB()->prepare(getQuery("getUserRestaurantRating"));
 			$statement->bindParam(':restaurantLocationID', $_POST['restaurantLocationID']);
 			$statement->bindParam(':username', $_POST["username"]);
 			$statement->execute();
 			http_response_code(200); //Things are okay
 			echo json_encode($statement->fetch());
+		}
+		else {
+			http_response_code(404); //Not Found
 		}
 	}
 
@@ -62,7 +71,7 @@
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->bindParam(':restaurantLocationID', $_POST['restaurantLocationID']);
 		$statement->bindParam(':menuRating', $_POST['menuRating']);
-		$statement->bindParam(':enviromentRating', $_POST['enviromentRating']);
+		$statement->bindParam(':environmentRating', $_POST['environmentRating']);
 		$statement->bindParam(':costRating', $_POST['costRating']);
 		$statement->bindParam(':qualityRating', $_POST['qualityRating']);
 		$statement->bindParam(':serviceRating', $_POST['serviceRating']);
@@ -89,12 +98,13 @@
 		$statement->bindParam(':restaurantID', $guid);
 		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
 		$statement->bindParam(':restaurantTypeID', $_POST['restaurantTypeID']);
+		echo json_encode($_POST);
 		$statement->bindParam(':restaurantEthnicityID', $_POST['restaurantEthnicityID']);
-		if(isUserAdministrator()[0]) {
-			$statement->bindParam(':isApproved', 1);
+		if(isUserAdministrator()) {
+			$statement->bindValue(':isApproved', 1);
 		}
 		else {
-			$statement->bindParam(':isApproved', 0);
+			$statement->bindValue(':isApproved', 0);
 		}
 		$statement->execute();
 		return $guid;
@@ -118,7 +128,7 @@
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->bindParam(':restaurantLocationID', $restaurantLocationID);
 		$statement->bindParam(':menuRating', $_POST['menuRating']);
-		$statement->bindParam(':enviromentRating', $_POST['enviromentRating']);
+		$statement->bindParam(':environmentRating', $_POST['environmentRating']);
 		$statement->bindParam(':costRating', $_POST['costRating']);
 		$statement->bindParam(':qualityRating', $_POST['qualityRating']);
 		$statement->bindParam(':serviceRating', $_POST['serviceRating']);
@@ -129,6 +139,7 @@
 	function rateRestaurant() {
 		if(userHasRatedRestaurant()) {
 			updateRestaurantRating();
+			echo json_encode(['result' => 'Success']);
 		}
 		else {
 			if(restaurantExists()) {
@@ -141,11 +152,5 @@
 			http_response_code(201); //Things are created
 			echo json_encode([result => 'success']);
 		}
-	}
-
-	function getRestaurantData() {
-		$statement = getDB()->prepare(getQuery("getRestaurantData"));
-		$statement->execute();
-		echo json_encode($statement->fetchAll());
 	}
 ?>

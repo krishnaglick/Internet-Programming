@@ -34,27 +34,24 @@ function MEEQSViewModel() {
 			};
 		});
 	}, this);
+	this.comment = ko.observable('');
 
-	this.restaurantData = ko.observable({});
-
-	this.restaurants = ko.computed(function() {
-		return Object.keys(this.restaurantData());
+	this.restaurants = ko.observable({});
+	this.restaurantNames = ko.computed(function() {
+		return Object.keys(this.restaurants());
 	}, this);
-
 	this.selectedRestaurant = ko.observable('');
 
-	this.restaurantEthnicites = ko.observableArray([]);
-	this.restaurantTypes = ko.observableArray([]);
-
-	this.restaurantLocation = ko.observable('');
 	this.restaurantLocations = ko.computed(function() {
-		if(this.selectedRestaurant() !== '') {
-			$('#restaurantLocations.dropdown').dropdown('restore defaults');
-			var restaurantLocations = $.map(this.restaurantData()[this.selectedRestaurant()], function(val) {
-				return val.StreetAddress;
+		if(this.selectedRestaurant() != '') {
+			var restaurantLocations = $.map(this.restaurants()[this.selectedRestaurant()], function(restaurantLocation) {
+				return restaurantLocation.restaurantStreetAddress;
 			});
 			if(restaurantLocations.length == 1) {
-				this.selectedRestaurant(restaurantLocations[0]);
+				this.selectedRestaurantLocation(restaurantLocations[0]);
+			}
+			else {
+				this.selectedRestaurantLocation('');
 			}
 			return restaurantLocations;
 		}
@@ -62,40 +59,61 @@ function MEEQSViewModel() {
 			return [];
 		}
 	}, this);
-
-	this.restaurantLocationID = ko.computed(function() {
-		if(this.restaurantLocation() === '') {
-			return '';
-		}
-
-		if(this.restaurantData()[this.selectedRestaurant()].length == 1) {
-			return this.restaurantData()[this.selectedRestaurant].LocationID;
+	this.selectedRestaurantLocation = ko.observable('');
+	this.selectedRestaurantLocationID = ko.computed(function() {
+		if(this.selectedRestaurantLocation() != '' && this.selectedRestaurant() != '') {
+			var restaurantLocationID = '';
+			this.restaurants()[this.selectedRestaurant()].forEach(function(restaurantLocation) {
+				if(restaurantLocation.restaurantStreetAddress == this.selectedRestaurantLocation()) {
+					restaurantLocationID = restaurantLocation.restaurantLocationID;
+				}
+			}.bind(this));
+			return restaurantLocationID;
 		}
 		else {
-			var that = this;
-			var locationID = '';
-			this.restaurantData()[this.selectedRestaurant()].forEach(function(val) {
-				if(val.StreetAddress == that.restaurantLocation()) {
-					locationID = val.LocationID;
-				}
-			});
-			return locationID;
+			return '';
+		}
+	}, this);
+	this.selectedRestaurantLocationID.subscribe(function() {
+		if(this.selectedRestaurantLocationID() != '') {
+			///TODO: Dynamically load old rating if it exists.
+			debugger;
 		}
 	}, this);
 
-	this.comment = ko.observable('');
+
+	this.restaurantEthnicites = ko.observableArray([]);
+	this.restaurantTypes = ko.observableArray([]);
 }
 
-MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
-	softRating(index);
-}
-
-MEEQSViewModel.prototype.clickHighlight = function(hardRating, index) {
-	hardRating(index);
-}
-
-MEEQSViewModel.prototype.removeHighlight = function(softRating) {
-	softRating(-1);
+MEEQSViewModel.prototype.loadRestaurants = function() {
+	var that = this;
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({ ajaxRoute: 'getRestaurants' }),
+		success: function(data) {
+			if(data.length > 0) {
+				data.forEach(function(restaurant) {
+					if(!(restaurant.restaurantName in that.restaurants())) {
+						that.restaurants()[restaurant.restaurantName] = [];
+					}
+					that.restaurants()[restaurant.restaurantName].push({
+						restaurantStreetAddress: restaurant.restaurantStreetAddress,
+						restaurantLocationID: restaurant.restaurantLocationID,
+						restaurantTypeID: restaurant.restaurantTypeID,
+						restaurantEthnicityID: restaurant.restaurantEthnicityID
+					});
+				});
+				that.restaurants.valueHasMutated();
+			}
+		},
+		error: function(data) {
+			showMessage(false, 'Error', 'There was a server error, please refresh the page!');
+		}
+	});
 }
 
 MEEQSViewModel.prototype.loadRestaurantEthnicities = function() {
@@ -138,36 +156,6 @@ MEEQSViewModel.prototype.loadRestaurantTypes = function() {
 	});
 }
 
-MEEQSViewModel.prototype.loadRestaurants = function() {
-	var that = this;
-	return $.ajax({
-		type: "POST",
-		dataType: "JSON",
-		contentType: "application/json",
-		url: "assign6/MEEQSController.php",
-		//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
-		data: ko.toJSON({ ajaxRoute: 'getRestaurantData' }),
-		success: function(data) {
-			if(data.length > 0) {
-				data.forEach(function(val) {
-					if(!(val.RestaurantName in that.restaurantData())) {
-						that.restaurantData()[val.RestaurantName] = [];
-					}
-					that.restaurantData()[val.RestaurantName].push({
-						StreetAddress: val.RestaurantStreetAddress,
-						LocationID: val.RestaurantLocationID
-					});
-				});
-
-				that.restaurantData.valueHasMutated();
-			}
-		},
-		error: function(data) {
-			showMessage(false, 'Error', 'There was a server error, please refresh the page!');
-		}
-	});
-}
-
 MEEQSViewModel.prototype.getPreviousUserRating = function() {
 	var that = this;
 	return $.ajax({
@@ -178,7 +166,7 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 		data: ko.toJSON({
 			ajaxRoute: 'getPreviousUserRating',
 			username: home_view_model.username,
-			restaurantLocationID: that.restaurantLocationID,
+			restaurantlocationID: that.restaurantLocationData().locationID,
 		}),
 		success: function(data) {
 			//I am a bad, bad man.
@@ -194,12 +182,12 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 	});
 }
 
-MEEQSViewModel.prototype.addRestaurant = function() {
+/*MEEQSViewModel.prototype.addRestaurant = function() {
 	if(this.newRestaurant() !== '') {
 		this.restaurants.push(this.newRestaurant());
 		this.newRestaurant('');
 	}
-}
+}*/
 
 MEEQSViewModel.prototype.submitRating = function() {
 	if(this.selectedRestaurant() !== '' && this.restaurantLocation() !== '') {
@@ -208,14 +196,15 @@ MEEQSViewModel.prototype.submitRating = function() {
 			dataType: "JSON",
 			contentType: "application/json",
 			url: "assign6/MEEQSController.php",
-			//WHY DO I HAVE TO POST TO DO GETS PHP, WHY.
 			data: ko.toJSON({
 				ajaxRoute: 'rateRestaurant',
 				restaurantName: this.restaurantName,
 				username: home_view_model.username,
-				restaurantLocationID: this.restaurantLocation,
+				restaurantlocationID: this.restaurantLocationData().locationID,
+				restaurantTypeID: this.restaurantLocationData().restaurantTypeID,
+				restaurantEthnicityID: this.restaurantLocationData().restaurantEthnicityID,
 				menuRating: this.rating()[0].hardRating,
-				EnvironmentRating: this.rating()[1].hardRating,
+				environmentRating: this.rating()[1].hardRating,
 				costRating: this.rating()[2].hardRating,
 				qualityRating: this.rating()[3].hardRating,
 				serviceRating: this.rating()[4].hardRating,
@@ -229,13 +218,37 @@ MEEQSViewModel.prototype.submitRating = function() {
 	}
 }
 
-MEEQSViewModel.prototype.clearForm = function() {
+MEEQSViewModel.prototype.clearRatings = function() {
 	this.rating().forEach(function(val) {
 		val.hardRating(-1);
 		val.softRating(-1);
 	});
+}
 
+MEEQSViewModel.prototype.clearForm = function() {
+	this.clearRatings();
 	this.selectedRestaurant('');
 	this.restaurantLocation('');
 	$('#restaurants.dropdown').dropdown('restore defaults');
+}
+
+
+
+
+
+
+
+
+
+
+MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
+	softRating(index);
+}
+
+MEEQSViewModel.prototype.clickHighlight = function(hardRating, index) {
+	hardRating(index);
+}
+
+MEEQSViewModel.prototype.removeHighlight = function(softRating) {
+	softRating(-1);
 }

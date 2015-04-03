@@ -9,32 +9,167 @@
 
 	function getQuery($query) {
 		$queries = [
-				'register' => "INSERT INTO Users (Username, Password) VALUES (:username, :password)",
-				'login' => "SELECT Username FROM Users WHERE Username = :username AND Password = :password",
-				'isAdmin' => "SELECT IsAdministrator FROM Users WHERE Username = :username",
-				'createTicket' => "INSERT INTO AuthenticationTickets VALUES (:authTicket, NOW())",
-				'updateTicket' => "UPDATE AuthenticationTickets SET LastAccessedTime = NOW() WHERE AuthenticationTicket = :authTicket",
-				'validateTicket' => "SELECT TIMEDIFF(NOW(), (SELECT LastAccessedTime FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket))",
-				'deleteTicket' => "DELETE FROM AuthenticationTickets WHERE AuthenticationTicket = :authTicket",
-				'saveStocks' => "INSERT INTO Stocks VALUES (:username, :stocks)",
-				'updateStocks' => "UPDATE Stocks SET Stocks = :stocks WHERE Username = :username",
-				'loadStocks' => "SELECT Stocks from Stocks WHERE Username = :username",
-				'haveStocks' => "SELECT * FROM Stocks WHERE Username = :username",
-				'createRestaurant' => "INSERT INTO Restaurants VALUES (:restaurantID, :restaurantName, :restaurantTypeID, :restaurantEthnicityID, :isApproved)",
-				'createRestaurantLocation' => "INSERT INTO RestaurantLocation VALUES (:restaurantLocationID, :restaurantID, :restaurantCity, :restaurantState, :restaurantZip, :restaurantStreetAddress)",
-				'createRestaurantRating' => "INSERT INTO RestaurantRatings VALUES (:restaurantLocationID, :username, :menuRating, :enviromentRating, :costRating, :qualityRating, :serviceRating, :comment)",
-				'doesRestaurantExist' => "SELECT * FROM Restaurants WHERE RestaurantName = :restaurantName",
-				'getRestaurantID' => "SELECT RestaurantID FROM Restaurants WHERE RestaurantName = :restaurantName",
-				'userHasRatedRestaurant' => "SELECT * FROM RestaurantRatings WHERE RestaurantLocationID = :restaurantLocationID AND Username = :username",
-				'getRestaurantRatings' => "SELECT Enviroment, Cost, Quality, Service FROM Restaurants INNER JOIN RestaurantRatings WHERE RestaurantName = :restaurantName AND Username = :username",
-				'getAllResturants' => "SELECT RestaurantName, Avg(Menu), Avg(Enviroment), Avg(Cost), Avg(Quality), Avg(Service) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
-				'getRestaurantData' => "SELECT RestaurantName, RestaurantLocationID, RestaurantStreetAddress from Restaurants INNER JOIN RestaurantLocations ON Restaurants.RestaurantID = RestaurantLocations.RestaurantID WHERE IsApproved = 1",
-				'getRestaurantEthnicities' => "SELECT RestaurantEthnicityName FROM RestaurantEthnicities",
-				'getRestaurantTypes' => "SELECT RestaurantTypeName FROM RestaurantTypes",
-				'getPreviousUserRating' => "SELECT Menu, Environment, Cost, Quality, Service, Comment FROM RestaurantRatings WHERE Username = :username and RestaurantLocationID = :restaurantLocationID",
-				'updateRestaurantRating' => "UPDATE RestaurantRatings SET Menu = :menuRating, Enviroment = :enviromentRating, Cost = :costRating, Quality = :qualityRating, Service = :serviceRating, Comment = :comment WHERE RestaurantLocationID = :restaurantLocationID AND Username = :username",
-				'deleteRestaurant' => "DELETE FROM Restaurants WHERE RestaurantName = :restaurantName",
+				//Authentication
+				'register' =>	"INSERT INTO Users (username, password)
+								VALUES (:username, :password)",
+
+				'login' => 		"SELECT username
+								FROM Users
+								WHERE username = :username
+								AND password = :password",
+
+				'isAdmin' => 	"SELECT isAdministrator
+								FROM Users
+								WHERE username = :username",
+
+				'createTicket' => 	"INSERT INTO AuthenticationTickets
+									VALUES (:authTicket, NOW(), :isAdmin)",
+
+				'updateTicket' => 	"UPDATE AuthenticationTickets
+									SET lastAccessedTime = NOW()
+									WHERE authenticationTicket = :authTicket",
+
+				'validateTicket' => "SELECT TIMEDIFF
+									(
+										NOW(),
+										(
+											SELECT lastAccessedTime
+											FROM AuthenticationTickets
+											WHERE authenticationTicket = :authTicket
+										)
+									)",
+
+				'deleteTicket' => 	"DELETE FROM AuthenticationTickets
+									WHERE authenticationTicket = :authTicket",
+
+				//Stocks
+				'saveStocks' => 	"INSERT INTO Stocks
+									VALUES (:username, :stocks)",
+
+				'updateStocks' => 	"UPDATE Stocks
+									SET stocks = :stocks
+									WHERE username = :username",
+
+				'loadStocks' => 	"SELECT Stocks
+									FROM Stocks
+									WHERE username = :username",
+
+				'haveStocks' => 	"SELECT *
+									FROM Stocks
+									WHERE username = :username",
+
+				//MEEQS Queries
+				'createRestaurant' =>
+									"INSERT INTO Restaurants
+									VALUES
+									(
+										:restaurantID,
+										:restaurantName,
+										:restaurantTypeID,
+										:restaurantEthnicityID,
+										:isApproved
+									)",
+
+				'createRestaurantLocation' =>
+									"INSERT INTO RestaurantLocation
+									VALUES
+									(
+										:restaurantLocationID,
+										:restaurantID,
+										:restaurantCity,
+										:restaurantState,
+										:restaurantZip,
+										:restaurantStreetAddress
+									)",
+
+				'createRestaurantRating' =>
+									"INSERT INTO RestaurantRatings
+									VALUES
+									(
+										:restaurantLocationID,
+										:username,
+										:menuRating,
+										:environmentRating,
+										:costRating,
+										:qualityRating,
+										:serviceRating,
+										:comment
+									)",
+
+				'doesRestaurantExist' =>
+									"SELECT *
+									FROM Restaurants
+									WHERE restaurantName = :restaurantName",
+				'getRestaurantID' =>
+									"SELECT restaurantID
+									FROM Restaurants
+									WHERE restaurantName = :restaurantName",
+
+				'userHasRatedRestaurant' =>
+									"SELECT *
+									FROM RestaurantRatings
+									WHERE restaurantLocationID = :restaurantLocationID
+									AND username = :username",
+
+				'getRestaurantRatings' =>
+									"SELECT
+										environmentRating,
+										costRating,
+										qualityRating,
+										serviceRating
+									FROM Restaurants
+									INNER JOIN RestaurantRatings
+									WHERE restaurantName = :restaurantName
+									AND username = :username",
+
+				'getRestaurantData' =>
+									"SELECT
+										restaurantName,
+										restaurantLocationID,
+										restaurantStreetAddress,
+										restaurantTypeID,
+										restaurantEthnicityID
+									FROM Restaurants
+									INNER JOIN RestaurantLocations
+										ON Restaurants.restaurantID = RestaurantLocations.restaurantID
+									WHERE isApproved = 1",
+
+				'getRestaurantEthnicities' =>
+									"SELECT restaurantEthnicityName
+									FROM RestaurantEthnicities",
+				'getRestaurantTypes' =>
+									"SELECT restaurantTypeName
+									FROM RestaurantTypes",
+
+				'getUserRestaurantRating' =>
+									"SELECT
+										menuRating,
+										environmentRating,
+										costRating,
+										qualityRating,
+										serviceRating,
+										comment
+									FROM RestaurantRatings
+									WHERE username = :username
+									AND restaurantLocationID = :restaurantLocationID",
+
+				'updateRestaurantRating' =>
+									"UPDATE RestaurantRatings
+									SET
+										menuRating = :menuRating,
+										environmentRating = :environmentRating,
+										costRating = :costRating,
+										qualityRating = :qualityRating,
+										serviceRating = :serviceRating,
+										comment = :comment
+									WHERE restaurantLocationID = :restaurantLocationID
+									AND username = :username",
+
+				'deleteRestaurant' =>
+									"DELETE FROM Restaurants
+									WHERE restaurantName = :restaurantName",
 			];
 		return $queries[$query];
 	}
+	//'getAllResturants' => "SELECT RestaurantName, Avg(menuRating), Avg(environmentRating), Avg(costRating), Avg(qualityRating), Avg(serviceRating) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
 ?>
