@@ -82,6 +82,16 @@ function MEEQSViewModel() {
 
 	this.restaurantEthnicites = ko.observableArray([]);
 	this.restaurantTypes = ko.observableArray([]);
+
+	this.addRestaurantData = {
+		restaurantName: ko.observable(''),
+		restaurantEthnicity: ko.observable(''),
+		restaurantType: ko.observable(''),
+		restaurantCity: ko.observable(''),
+		restaurantState: ko.observable(''),
+		restaurantZip: ko.observable(''),
+		restaurantStreetAddress: ko.observable('')
+	};
 }
 
 MEEQSViewModel.prototype.loadRestaurants = function() {
@@ -123,8 +133,8 @@ MEEQSViewModel.prototype.loadRestaurantEthnicities = function() {
 		data: ko.toJSON({ ajaxRoute: 'getRestaurantEthnicities' }),
 		success: function(data) {
 			if(data.length > 0) {
-				meeqs_view_model.restaurantEthnicites($.map(data, function(val) {
-					return val.RestaurantEthnicityName;
+				meeqs_view_model.restaurantEthnicites($.map(data, function(restaurantEthnicity) {
+					return restaurantEthnicity.restaurantEthnicityName;
 				}));
 			}
 		},
@@ -143,8 +153,8 @@ MEEQSViewModel.prototype.loadRestaurantTypes = function() {
 		data: ko.toJSON({ ajaxRoute: 'getRestaurantTypes' }),
 		success: function(data) {
 			if(data.length > 0) {
-				meeqs_view_model.restaurantTypes($.map(data, function(val) {
-					return val.RestaurantTypeName;
+				meeqs_view_model.restaurantTypes($.map(data, function(restaurantType) {
+					return restaurantType.restaurantTypeName;
 				}));
 			}
 		},
@@ -180,12 +190,39 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 	});
 }
 
-/*MEEQSViewModel.prototype.addRestaurant = function() {
-	if(this.newRestaurant() !== '') {
-		this.restaurants.push(this.newRestaurant());
-		this.newRestaurant('');
+MEEQSViewModel.prototype.addRestaurant = function(addRestaurantData, viewModel) {
+	function restaurantDataValid() {
+		var dataValid = true;
+		Object.keys(addRestaurantData).forEach(function(key) {
+			if(this[key]() == '') {
+				dataValid = false;
+			}
+		}.bind(addRestaurantData));
+		return dataValid;
 	}
-}*/
+
+	if(restaurantDataValid) {
+		/*
+			TODO: 	Post restaurant data to server,
+					add restaurant,
+					return restaurantLocationID,
+					then add restaurant to viewModel.restaurants on the front end
+					so user can rate
+		*/
+	}
+	else {
+		showMessage(false, 'Error', 'We need more information to add the restaurant.');
+	}
+}
+
+MEEQSViewModel.prototype.cancelAddRestaurant = function(addRestaurantData, viewModel) {
+	Object.keys(addRestaurantData).forEach(function(key) {
+		this[key]('');
+	}.bind(addRestaurantData));
+
+	$('a.item[data-tab="Rate"]').click();
+	viewModel.resetDropdowns();
+}
 
 MEEQSViewModel.prototype.submitRating = function() {
 	if(this.selectedRestaurant() !== '' && this.selectedRestaurantLocation() !== '') {
@@ -228,9 +265,8 @@ MEEQSViewModel.prototype.clearRatings = function() {
 MEEQSViewModel.prototype.clearForm = function() {
 	this.clearRatings();
 	this.selectedRestaurant('');
-	this.restaurantLocation('');
-	$('#restaurantLocations.dropdown').dropdown('restore defaults');
-	$('#restaurants.dropdown').dropdown('restore defaults');
+	this.selectedRestaurantLocation('');
+	this.resetDropdowns();
 }
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
@@ -243,4 +279,12 @@ MEEQSViewModel.prototype.clickHighlight = function(hardRating, index) {
 
 MEEQSViewModel.prototype.removeHighlight = function(softRating) {
 	softRating(-1);
+}
+
+MEEQSViewModel.prototype.resetDropdowns = function() {
+	$('#restaurants.dropdown').dropdown('restore defaults');
+	$('#restaurantLocations.dropdown').dropdown('restore defaults');
+	$('#restaurantEthnicities.dropdown').dropdown('restore defaults');
+	$('#restaurantTypes.dropdown').dropdown('restore defaults');
+	$('#states.dropdown').dropdown('restore defaults');
 }

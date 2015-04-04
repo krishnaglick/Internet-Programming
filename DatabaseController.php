@@ -135,10 +135,10 @@
 									WHERE isApproved = 1",
 
 				'getRestaurantEthnicities' =>
-									"SELECT restaurantEthnicityName
+									"SELECT *
 									FROM RestaurantEthnicities",
 				'getRestaurantTypes' =>
-									"SELECT restaurantTypeName
+									"SELECT *
 									FROM RestaurantTypes",
 
 				'getUserRestaurantRating' =>
