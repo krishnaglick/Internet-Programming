@@ -92,9 +92,23 @@ function MEEQSViewModel() {
 		restaurantZip: ko.observable(''),
 		restaurantStreetAddress: ko.observable('')
 	};
+	this.addRestaurantData.restaurantName.subscribe(function() {
+		if(this.addRestaurantData.restaurantName() in this.restaurants()) {
+			$('#restaurantEthnicities').prop('disabled', true);
+			$('#restaurantTypes').prop('disabled', true);
+		}
+		else {
+			$('#restaurantEthnicities').prop('disabled', false);
+			$('#restaurantTypes').prop('disabled', false);
+		}
+	}, this);
+
+	this.averageRestaurantRatings = ko.observableArray([]);
+	this.restaurantAdminList = ko.observableArray([]);
 }
 
 MEEQSViewModel.prototype.loadRestaurants = function() {
+	this.restaurants({});
 	var that = this;
 	return $.ajax({
 		type: "POST",
@@ -133,9 +147,10 @@ MEEQSViewModel.prototype.loadRestaurantEthnicities = function() {
 		data: ko.toJSON({ ajaxRoute: 'getRestaurantEthnicities' }),
 		success: function(data) {
 			if(data.length > 0) {
-				meeqs_view_model.restaurantEthnicites($.map(data, function(restaurantEthnicity) {
-					return restaurantEthnicity.restaurantEthnicityName;
-				}));
+				meeqs_view_model.restaurantEthnicites(data.reduce(function(ethnicities, ethnicity) {
+					ethnicities[ethnicity.restaurantEthnicityName] = ethnicity.restaurantEthnicityID;
+					return ethnicities;
+				}, {}));
 			}
 		},
 		error: function(data) {
@@ -153,9 +168,10 @@ MEEQSViewModel.prototype.loadRestaurantTypes = function() {
 		data: ko.toJSON({ ajaxRoute: 'getRestaurantTypes' }),
 		success: function(data) {
 			if(data.length > 0) {
-				meeqs_view_model.restaurantTypes($.map(data, function(restaurantType) {
-					return restaurantType.restaurantTypeName;
-				}));
+				meeqs_view_model.restaurantTypes(data.reduce(function(types, type) {
+					types[type.restaurantTypeName] = type.restaurantTypeID;
+					return types;
+				}, {}));
 			}
 		},
 		error: function(data) {
@@ -164,7 +180,52 @@ MEEQSViewModel.prototype.loadRestaurantTypes = function() {
 	});
 }
 
+MEEQSViewModel.prototype.getAverageRestaurantRatings = function() {
+	var that = this;
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({
+			ajaxRoute: 'getAverageRestaurantRatings'
+		}),
+		success: function(data) {
+			that.averageRestaurantRatings($.map(data, function(rating) {
+				return {
+					restaurantName: rating.restaurantName,
+					menuRating: parseFloat(rating.menuRating).toFixed(2),
+					environmentRating: parseFloat(rating.environmentRating).toFixed(2),
+					costRating: parseFloat(rating.costRating).toFixed(2),
+					qualityRating: parseFloat(rating.qualityRating).toFixed(2),
+					serviceRating: parseFloat(rating.serviceRating).toFixed(2)
+				}
+			}));
+		}
+	});
+}
+
+MEEQSViewModel.prototype.loadAdminList = function() {
+	var that = this;
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({
+			ajaxRoute: 'loadAdminList',
+			username: home_view_model.username
+		}),
+		success: function(data) {
+			that.restaurantAdminList(data);
+		}
+	});
+}
+
 MEEQSViewModel.prototype.getPreviousUserRating = function() {
+	if(!home_view_model.loggedIn()) {
+		return;
+	}
 	var that = this;
 	return $.ajax({
 		type: "POST",
@@ -184,8 +245,6 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 			that.rating()[3].hardRating(data['qualityRating']);
 			that.rating()[4].hardRating(data['serviceRating']);
 			that.comment(data['comment']);
-		},
-		error: function(data) {
 		}
 	});
 }
@@ -201,14 +260,44 @@ MEEQSViewModel.prototype.addRestaurant = function(addRestaurantData, viewModel) 
 		return dataValid;
 	}
 
-	if(restaurantDataValid) {
-		/*
-			TODO: 	Post restaurant data to server,
-					add restaurant,
-					return restaurantLocationID,
-					then add restaurant to viewModel.restaurants on the front end
-					so user can rate
-		*/
+	if(restaurantDataValid()) {
+		var that = viewModel;
+		return $.ajax({
+			type: "POST",
+			dataType: "JSON",
+			contentType: "application/json",
+			url: "assign6/MEEQSController.php",
+			data: ko.toJSON({
+				ajaxRoute: 'createRestaurant',
+				username: home_view_model.username,
+				newRestaurantData: that.addRestaurantData,
+				newRestaurantEthnicityID: that.restaurantEthnicites()[that.addRestaurantData.restaurantEthnicity()] || '',
+				newRestaurantTypeID: that.restaurantTypes()[that.addRestaurantData.restaurantType()] || ''
+			}),
+			success: function(data) {
+				if(!(that.addRestaurantData.restaurantName() in that.restaurants())) {
+					that.restaurants()[that.addRestaurantData.restaurantName()] = [];
+				}
+				that.restaurants()[that.addRestaurantData.restaurantName()].push({
+					restaurantStreetAddress: that.addRestaurantData.restaurantStreetAddress(),
+					restaurantLocationID: data.restaurantLocationID,
+					restaurantTypeID: that.restaurantTypes()[that.addRestaurantData.restaurantType()],
+					restaurantEthnicityID: that.restaurantEthnicites()[that.addRestaurantData.restaurantEthnicity()]
+				});
+				that.cancelAddRestaurant(addRestaurantData, viewModel);
+				that.restaurants.valueHasMutated();
+				showMessage(true, 'Success', 'Restaurant Added');
+				that.loadAdminList();
+			},
+			error: function(data) {
+				if(data.status) {
+					showMessage(false, 'Error', data.responseJSON.error);
+				}
+				else {
+					showMessage(false, 'Error', 'Please try submitting the rating again!');
+				}
+			}
+		});
 	}
 	else {
 		showMessage(false, 'Error', 'We need more information to add the restaurant.');
@@ -225,7 +314,7 @@ MEEQSViewModel.prototype.cancelAddRestaurant = function(addRestaurantData, viewM
 }
 
 MEEQSViewModel.prototype.submitRating = function() {
-	if(this.selectedRestaurant() !== '' && this.selectedRestaurantLocation() !== '') {
+	if(this.selectedRestaurant() !== '' && this.selectedRestaurantLocation() !== '' && home_view_model.loggedIn()) {
 		var that = this;
 		return $.ajax({
 			type: "POST",
@@ -247,12 +336,58 @@ MEEQSViewModel.prototype.submitRating = function() {
 			}),
 			success: function() {
 				showMessage(true, 'Success', 'Rating Submitted');
+				that.getAverageRestaurantRatings();
 			},
 			error: function(data) {
 				showMessage(false, 'Error', 'Please try submitting the rating again!');
 			}
 		});
 	}
+}
+
+MEEQSViewModel.prototype.deleteRestaurantLocation = function(restaurant, viewModel) {
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({
+			ajaxRoute: 'deleteRestaurantLocation',
+			username: home_view_model.username,
+			restaurantName: restaurant.restaurantName,
+			restaurantStreetAddress: restaurant.restaurantStreetAddress
+		}),
+		success: function() {
+			viewModel.loadAdminList();
+			viewModel.loadRestaurants();
+			viewModel.getAverageRestaurantRatings();
+		},
+		error: function(data) {
+			showMessage(false, 'Error', 'Please try deleting the restaurant again.');
+		}
+	});
+}
+
+MEEQSViewModel.prototype.approveRestaurant = function(restaurant, viewModel) {
+	return $.ajax({
+		type: "POST",
+		dataType: "JSON",
+		contentType: "application/json",
+		url: "assign6/MEEQSController.php",
+		data: ko.toJSON({
+			ajaxRoute: 'approveRestaurant',
+			username: home_view_model.username,
+			restaurantName: restaurant.restaurantName
+		}),
+		success: function() {
+			viewModel.loadAdminList();
+			viewModel.loadRestaurants();
+			viewModel.getAverageRestaurantRatings();
+		},
+		error: function(data) {
+			showMessage(false, 'Error', 'Please try approving the restaurant again.');
+		}
+	});
 }
 
 MEEQSViewModel.prototype.clearRatings = function() {

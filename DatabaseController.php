@@ -100,6 +100,7 @@
 									"SELECT *
 									FROM Restaurants
 									WHERE restaurantName = :restaurantName",
+
 				'getRestaurantID' =>
 									"SELECT restaurantID
 									FROM Restaurants
@@ -111,16 +112,21 @@
 									WHERE restaurantLocationID = :restaurantLocationID
 									AND username = :username",
 
-				'getRestaurantRatings' =>
+				'getAverageRestaurantRatings' =>
 									"SELECT
-										environmentRating,
-										costRating,
-										qualityRating,
-										serviceRating
+										restaurantName,
+										AVG(menuRating) AS menuRating,
+										AVG(environmentRating) AS environmentRating,
+										AVG(costRating) AS costRating,
+										AVG(qualityRating) AS qualityRating,
+										AVG(serviceRating) AS serviceRating
 									FROM Restaurants
+									INNER JOIN RestaurantLocations
+										ON Restaurants.RestaurantID = RestaurantLocations.RestaurantID
 									INNER JOIN RestaurantRatings
-									WHERE restaurantName = :restaurantName
-									AND username = :username",
+										ON RestaurantLocations.RestaurantLocationID = RestaurantRatings.RestaurantLocationID
+									WHERE isApproved = 1
+									GROUP BY restaurantName",
 
 				'getRestaurantData' =>
 									"SELECT
@@ -153,6 +159,15 @@
 									WHERE username = :username
 									AND restaurantLocationID = :restaurantLocationID",
 
+				'loadAdminList' =>	"SELECT
+										restaurantName,
+										restaurantStreetAddress,
+										isApproved
+									FROM Restaurants
+									INNER JOIN RestaurantLocations
+										ON Restaurants.restaurantID = RestaurantLocations.restaurantID
+									ORDER BY restaurantName ASC",
+
 				'updateRestaurantRating' =>
 									"UPDATE RestaurantRatings
 									SET
@@ -165,11 +180,27 @@
 									WHERE restaurantLocationID = :restaurantLocationID
 									AND username = :username",
 
+				'restaurantLocationCount' =>
+									"SELECT *
+									FROM Restaurants
+									INNER JOIN RestaurantLocations
+										ON Restaurants.restaurantID = RestaurantLocations.restaurantID
+									WHERE restaurantName = :restaurantName",
+
 				'deleteRestaurant' =>
 									"DELETE FROM Restaurants
 									WHERE restaurantName = :restaurantName",
+
+				#I'm a bad, bad man.
+				'deleteRestaurantLocation' =>
+									"DELETE FROM RestaurantLocations
+									WHERE restaurantStreetAddress = :restaurantStreetAddress",
+
+				'approveRestaurant' =>
+									"UPDATE Restaurants
+									SET isApproved = 1
+									WHERE restaurantName = :restaurantName"
 			];
 		return $queries[$query];
 	}
-	//'getAllResturants' => "SELECT RestaurantName, Avg(menuRating), Avg(environmentRating), Avg(costRating), Avg(qualityRating), Avg(serviceRating) FROM Restaurants INNER JOIN RestaurantRatings ON Restaurants.RestaurantID = RestaurantRatings.RestaurantID;",
 ?>

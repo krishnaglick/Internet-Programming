@@ -12,10 +12,20 @@ $(function() {
 	});
 	meeqs_view_model.loadRestaurantTypes();
 	meeqs_view_model.loadRestaurantEthnicities();
+	meeqs_view_model.getAverageRestaurantRatings();
+	if(home_view_model.isAdministrator()) {
+		meeqs_view_model.loadAdminList();
+	}
 
 	home_view_model.loggedIn.subscribe(function() {
 		if(home_view_model.loggedIn()) {
 			this.clearForm();
+			if(home_view_model.isAdministrator()) {
+				meeqs_view_model.loadAdminList();
+			}
+		}
+		else {
+			$('.item[data-tab=Rate]').click();
 		}
 	}, meeqs_view_model);
 });

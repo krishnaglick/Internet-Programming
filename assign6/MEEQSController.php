@@ -9,15 +9,19 @@
 	if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		if (isset($_POST["ajaxRoute"]) && !empty($_POST["ajaxRoute"])) {
 			switch($_POST["ajaxRoute"]) {
+				case "createRestaurant": createRestaurant(); break;
 				case "rateRestaurant": rateRestaurant(); break;
 				case "getRestaurantEthnicities": getRestaurantEthnicities(); break;
 				case "getRestaurantTypes": getRestaurantTypes(); break;
-				case "getRestaurantRatings": getRestaurantRatings(); break;
+				case "getAverageRestaurantRatings": getAverageRestaurantRatings(); break;
 				case "getRestaurants": getRestaurants(); break;
 				case "getPreviousUserRating": getPreviousUserRating(); break;
+				case "loadAdminList": loadAdminList(); break;
+				case "deleteRestaurantLocation": deleteRestaurantLocation(); break;
+				case "approveRestaurant": approveRestaurant(); break;
 				case "updateRestaurantRating": updateRestaurantRating(); break;
 				case "deleteRestaurant": deleteRestaurant(); break;
-				default: echo json_encode(["error" => "Bad Route!"]); break;
+				default: http_response_code(404); echo json_encode(["error" => "Bad Route!"]); break;
 			}
 		}
 	}
@@ -80,48 +84,67 @@
 		$statement->execute();
 	}
 
-	function restaurantExists() {
+	function restaurantExists($restaurantData) {
 		$statement = getDB()->prepare(getQuery("doesRestaurantExist"));
-		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
+		$statement->bindParam(':restaurantName', $restaurantData['name']);
 		$statement->execute();
 		return $statement->rowCount() > 0;
 	}
 
-	function getRestaurantID() {
+	function getRestaurantID($restaurantName) {
 		$statement = getDB()->prepare(getQuery("getRestaurantID"));
-		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
-		return $statement->fetch();
+		$statement->bindParam(':restaurantName', $restaurantName);
+		$statement->execute();
+		return $statement->fetch()['restaurantID'];
 	}
 
 	function createRestaurant() {
-		$statement = getDB()->prepare(getQuery("createRestaurant"));
-		$guid = generateGUID();
-		$statement->bindParam(':restaurantID', $guid);
-		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
-		$statement->bindParam(':restaurantTypeID', $_POST['restaurantTypeID']);
-		echo json_encode($_POST);
-		$statement->bindParam(':restaurantEthnicityID', $_POST['restaurantEthnicityID']);
-		if(isUserAdministrator()) {
-			$statement->bindValue(':isApproved', 1);
+		$restaurantData = [
+			'name' => $_POST['newRestaurantData']['restaurantName'],
+			'typeID' => $_POST['newRestaurantTypeID'],
+			'ethnicityID' => $_POST['newRestaurantEthnicityID'],
+			'city' => $_POST['newRestaurantData']['restaurantCity'],
+			'state' => $_POST['newRestaurantData']['restaurantState'],
+			'zip' => $_POST['newRestaurantData']['restaurantZip'],
+			'street' => $_POST['newRestaurantData']['restaurantStreetAddress'],
+		];
+
+		if(!restaurantExists($restaurantData)) {
+			$statement = getDB()->prepare(getQuery("createRestaurant"));
+			$restaurantID = generateGUID();
+			$statement->bindParam(':restaurantID', $restaurantID);
+			$statement->bindParam(':restaurantName', $restaurantData['name']);
+			$statement->bindParam(':restaurantTypeID', $restaurantData['typeID']);
+			$statement->bindParam(':restaurantEthnicityID', $restaurantData['ethnicityID']);
+			if(isUserAdministrator()) {
+				$statement->bindValue(':isApproved', 1);
+			}
+			else {
+				$statement->bindValue(':isApproved', 0);
+			}
+			$statement->execute();
+			echo json_encode(['restaurantLocationID' => 
+				createRestaurantLocation($restaurantID, $restaurantData)]);
+			http_response_code(201);
 		}
 		else {
-			$statement->bindValue(':isApproved', 0);
+			$restaurantID = getRestaurantID($restaurantData['name']);
+			echo json_encode(['restaurantLocationID' => 
+				createRestaurantLocation($restaurantID, $restaurantData)]);
 		}
-		$statement->execute();
-		return $guid;
 	}
 
-	function createRestaurantLocation($restaurantID) {
+	function createRestaurantLocation($restaurantID, $restaurantData) {
 		$statement = getDB()->prepare(getQuery("createRestaurantLocation"));
-		$guid = generateGUID();
-		$statement->bindParam(':restaurantLocationID', $guid);
+		$restaurantLocationID = generateGUID();
+		$statement->bindParam(':restaurantLocationID', $restaurantLocationID);
 		$statement->bindParam(':restaurantID', $restaurantID);
-		$statement->bindParam(':restaurantID', $_POST['restaurantCity']);
-		$statement->bindParam(':restaurantID', $_POST['restaurantState']);
-		$statement->bindParam(':restaurantID', $_POST['restaurantZip']);
-		$statement->bindParam(':restaurantID', $_POST['restaurantStreetAddress']);
+		$statement->bindParam(':restaurantCity', $restaurantData['city']);
+		$statement->bindParam(':restaurantState', $restaurantData['state']);
+		$statement->bindParam(':restaurantZip', $restaurantData['zip']);
+		$statement->bindParam(':restaurantStreetAddress', $restaurantData['street']);
 		$statement->execute();
-		return $guid;
+		return $restaurantLocationID;
 	}
 
 	function createRestaurantRating() {
@@ -143,13 +166,64 @@
 			echo json_encode(['result' => 'Success']);
 		}
 		else {
-			/*if(!restaurantExists()) {
-				$restaurantID = createRestaurant();
-				createRestaurantLocation($restaurantID);
-			}*/
 			createRestaurantRating();
 			http_response_code(201); //Things are created
 			echo json_encode(['result' => 'success']);
+		}
+	}
+
+	function getAverageRestaurantRatings() {
+		$statement = getDB()->prepare(getQuery("getAverageRestaurantRatings"));
+		$statement->execute();
+		echo json_encode($statement->fetchAll());
+	}
+
+	function loadAdminList() {
+		if(isUserAdministrator()) {
+			$statement = getDB()->prepare(getQuery("loadAdminList"));
+			$statement->execute();
+			http_response_code(200); //Things are okay
+			echo json_encode($statement->fetchAll());
+		}
+	}
+
+	function approveRestaurant() {
+		if(isUserAdministrator()) {
+			$statement = getDB()->prepare(getQuery("approveRestaurant"));
+			$statement->bindParam(':restaurantName', $_POST['restaurantName']);
+			$statement->execute();
+			http_response_code(200); //Okay
+			echo json_encode('Success');
+		}
+	}
+
+	function restaurantLocationCount($restaurantName) {
+		$statement = getDB()->prepare(getQuery("restaurantLocationCount"));
+		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
+		$statement->execute();
+		return $statement->rowCount();
+	}
+
+	function deleteRestaurant($restaurantName) {
+		$statement = getDB()->prepare(getQuery("deleteRestaurant"));
+		$statement->bindParam(':restaurantName', $_POST['restaurantName']);
+		$statement->execute();
+		echo json_encode('Success');
+		http_response_code(200);
+	}
+
+	function deleteRestaurantLocation() {
+		if(isUserAdministrator()) {
+			if(restaurantLocationCount($_POST['restaurantName']) > 1) {
+				$statement = getDB()->prepare(getQuery("deleteRestaurantLocation"));
+				$statement->bindParam(':restaurantStreetAddress', $_POST['restaurantStreetAddress']);
+				$statement->execute();
+				echo json_encode('Success');
+				http_response_code(200);
+			}
+			else {
+				deleteRestaurant($_POST['restaurantName']);
+			}
 		}
 	}
 ?>
