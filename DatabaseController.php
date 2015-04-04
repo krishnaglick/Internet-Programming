@@ -71,7 +71,7 @@
 									)",
 
 				'createRestaurantLocation' =>
-									"INSERT INTO RestaurantLocation
+									"INSERT INTO RestaurantLocations
 									VALUES
 									(
 										:restaurantLocationID,

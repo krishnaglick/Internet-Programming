@@ -12,7 +12,7 @@
 
 			<div class="ui bottom attached active tab segment" data-tab="Rate">
 				<div class="six wide field">
-					<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
+					<div id="restaurants" style="min-width: 220px; min-height: 35px;" class="ui fluid search selection dropdown">
 						<input type="hidden" data-bind="value: selectedRestaurant" />
 						<div class="default text">Select a Restaurant</div>
 						<i class="dropdown icon"></i>
@@ -21,7 +21,7 @@
 						</div>
 					</div>
 
-					<div id="restaurantLocations" style="min-width: 220px;" class="ui fluid search selection dropdown" data-bind="visible: restaurantLocations().length > 1">
+					<div id="restaurantLocations" style="min-width: 220px; min-height: 35px;" class="ui fluid search selection dropdown" data-bind="visible: restaurantLocations().length > 1">
 						<input type="hidden" data-bind="value: selectedRestaurantLocation" />
 						<div class="default text">Pick Location</div>
 						<i class="dropdown icon"></i>

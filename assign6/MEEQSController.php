@@ -54,6 +54,7 @@
 			echo json_encode($statement->fetch());
 		}
 		else {
+			echo json_encode('No Rating Found');
 			http_response_code(404); //Not Found
 		}
 	}
@@ -123,10 +124,10 @@
 		return $guid;
 	}
 
-	function createRestaurantRating($restaurantLocationID) {
+	function createRestaurantRating() {
 		$statement = getDB()->prepare(getQuery("createRestaurantRating"));
 		$statement->bindParam(':username', $_POST["username"]);
-		$statement->bindParam(':restaurantLocationID', $restaurantLocationID);
+		$statement->bindParam(':restaurantLocationID', $_POST["restaurantLocationID"]);
 		$statement->bindParam(':menuRating', $_POST['menuRating']);
 		$statement->bindParam(':environmentRating', $_POST['environmentRating']);
 		$statement->bindParam(':costRating', $_POST['costRating']);
@@ -142,15 +143,13 @@
 			echo json_encode(['result' => 'Success']);
 		}
 		else {
-			if(restaurantExists()) {
-				$restaurantID = getRestaurantID();
-			}
-			else {
+			/*if(!restaurantExists()) {
 				$restaurantID = createRestaurant();
-			}
-			createRestaurantRating(createRestaurantLocation($restaurantID));
+				createRestaurantLocation($restaurantID);
+			}*/
+			createRestaurantRating();
 			http_response_code(201); //Things are created
-			echo json_encode([result => 'success']);
+			echo json_encode(['result' => 'success']);
 		}
 	}
 ?>

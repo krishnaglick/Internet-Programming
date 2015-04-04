@@ -6,7 +6,7 @@
 		$statement = getDB()->prepare(getQuery("isAdmin"));
 		$statement->bindParam(':username', $_POST["username"]);
 		$statement->execute();
-		if($statement->fetch()['IsAdministrator'] == 1) {
+		if($statement->fetch()['isAdministrator'] == 1) {
 			return true;
 		}
 		else {

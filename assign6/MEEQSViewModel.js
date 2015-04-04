@@ -53,6 +53,8 @@ function MEEQSViewModel() {
 			else {
 				this.selectedRestaurantLocation('');
 			}
+			$('#restaurantLocations.dropdown').dropdown('restore defaults');
+			this.clearRatings();
 			return restaurantLocations;
 		}
 		else {
@@ -60,24 +62,20 @@ function MEEQSViewModel() {
 		}
 	}, this);
 	this.selectedRestaurantLocation = ko.observable('');
-	this.selectedRestaurantLocationID = ko.computed(function() {
+	this.selectedRestaurantLocationID = ko.observable('');
+	this.selectedRestaurantEthnicityID = ko.observable('');
+	this.selectedRestaurantTypeID = ko.observable('');
+	this.selectedRestaurantLocation.subscribe(function() {
 		if(this.selectedRestaurantLocation() != '' && this.selectedRestaurant() != '') {
-			var restaurantLocationID = '';
 			this.restaurants()[this.selectedRestaurant()].forEach(function(restaurantLocation) {
 				if(restaurantLocation.restaurantStreetAddress == this.selectedRestaurantLocation()) {
-					restaurantLocationID = restaurantLocation.restaurantLocationID;
+					this.selectedRestaurantLocationID(restaurantLocation.restaurantLocationID);
+					this.selectedRestaurantEthnicityID(restaurantLocation.restaurantEthnicityID);
+					this.selectedRestaurantTypeID(restaurantLocation.restaurantTypeID);
+					this.clearRatings();
+					this.getPreviousUserRating();
 				}
 			}.bind(this));
-			return restaurantLocationID;
-		}
-		else {
-			return '';
-		}
-	}, this);
-	this.selectedRestaurantLocationID.subscribe(function() {
-		if(this.selectedRestaurantLocationID() != '') {
-			///TODO: Dynamically load old rating if it exists.
-			debugger;
 		}
 	}, this);
 
@@ -166,16 +164,16 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 		data: ko.toJSON({
 			ajaxRoute: 'getPreviousUserRating',
 			username: home_view_model.username,
-			restaurantlocationID: that.restaurantLocationData().locationID,
+			restaurantLocationID: that.selectedRestaurantLocationID(),
 		}),
 		success: function(data) {
 			//I am a bad, bad man.
-			that.rating()[0].hardRating(data['Menu']);
-			that.rating()[1].hardRating(data['Environment']);
-			that.rating()[2].hardRating(data['Cost']);
-			that.rating()[3].hardRating(data['Quality']);
-			that.rating()[4].hardRating(data['Service']);
-			that.comment(data['Comment']);
+			that.rating()[0].hardRating(data['menuRating']);
+			that.rating()[1].hardRating(data['environmentRating']);
+			that.rating()[2].hardRating(data['costRating']);
+			that.rating()[3].hardRating(data['qualityRating']);
+			that.rating()[4].hardRating(data['serviceRating']);
+			that.comment(data['comment']);
 		},
 		error: function(data) {
 		}
@@ -190,7 +188,8 @@ MEEQSViewModel.prototype.getPreviousUserRating = function() {
 }*/
 
 MEEQSViewModel.prototype.submitRating = function() {
-	if(this.selectedRestaurant() !== '' && this.restaurantLocation() !== '') {
+	if(this.selectedRestaurant() !== '' && this.selectedRestaurantLocation() !== '') {
+		var that = this;
 		return $.ajax({
 			type: "POST",
 			dataType: "JSON",
@@ -198,19 +197,20 @@ MEEQSViewModel.prototype.submitRating = function() {
 			url: "assign6/MEEQSController.php",
 			data: ko.toJSON({
 				ajaxRoute: 'rateRestaurant',
-				restaurantName: this.restaurantName,
 				username: home_view_model.username,
-				restaurantlocationID: this.restaurantLocationData().locationID,
-				restaurantTypeID: this.restaurantLocationData().restaurantTypeID,
-				restaurantEthnicityID: this.restaurantLocationData().restaurantEthnicityID,
-				menuRating: this.rating()[0].hardRating,
-				environmentRating: this.rating()[1].hardRating,
-				costRating: this.rating()[2].hardRating,
-				qualityRating: this.rating()[3].hardRating,
-				serviceRating: this.rating()[4].hardRating,
-				comment: this.restaurantComment
+				restaurantLocationID: that.selectedRestaurantLocationID,
+				restaurantTypeID: that.selectedRestaurantTypeID,
+				restaurantEthnicityID: that.selectedRestaurantEthnicityID,
+				menuRating: that.rating()[0].hardRating,
+				environmentRating: that.rating()[1].hardRating,
+				costRating: that.rating()[2].hardRating,
+				qualityRating: that.rating()[3].hardRating,
+				serviceRating: that.rating()[4].hardRating,
+				comment: this.comment
 			}),
-			success: function() {},
+			success: function() {
+				showMessage(true, 'Success', 'Rating Submitted');
+			},
 			error: function(data) {
 				showMessage(false, 'Error', 'Please try submitting the rating again!');
 			}
@@ -229,17 +229,9 @@ MEEQSViewModel.prototype.clearForm = function() {
 	this.clearRatings();
 	this.selectedRestaurant('');
 	this.restaurantLocation('');
+	$('#restaurantLocations.dropdown').dropdown('restore defaults');
 	$('#restaurants.dropdown').dropdown('restore defaults');
 }
-
-
-
-
-
-
-
-
-
 
 MEEQSViewModel.prototype.hoverHighlight = function(softRating, index) {
 	softRating(index);
