@@ -39,7 +39,7 @@
 							<span data-bind="foreach: stocksList">
 								<span data-bind="if: typeof $data.myOwnedStocks !== 'undefined' && $data.myOwnedStocks().length > 0">
 									<div class="row" data-bind="with: $data.myOwnedStocks">
-										<div class="fluid ui toggle button" data-bind="click: function() {$root.addOrRemoveStockFromChart($data, $parent, $root)}, css: { active: $data.active }">
+										<div class="fluid ui toggle button" data-bind="click: function() {$root.addOrRemoveStockFromChart($data, $parent, $root)}, css: { active: $data.active }" style="border-radius: 0;">
 											<i class="external share icon"></i>
 											<span data-bind="text: $parent.Name"></span>
 										</div>

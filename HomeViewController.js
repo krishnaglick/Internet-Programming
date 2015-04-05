@@ -10,25 +10,12 @@ $(function() {
 		if(typeof Cookies.get('username') !== 'undefined' && typeof Cookies.get('authTicket') !== 'undefined') {
 			home_view_model.username(Cookies.get('username'));
 			home_view_model.authTicket(Cookies.get('authTicket'));
+			home_view_model.isAdministrator(Cookies.get('isAdministrator'));
 			home_view_model.loggedIn(true);
 		}
 
 		ko.applyBindings(home_view_model, $('title')[0]);
 		ko.applyBindings(home_view_model, $('.navigationContent')[0]);
-
-		window.addEventListener('hashchange', function(e) {
-			var route = e.newURL.split('#')[1];
-			changePage(route);
-		});
-
-		var route = window.location.href.split('#')[1];
-		if(typeof route === 'undefined') {
-			route = "home";
-			window.location.href = window.location.href.split('#')[0] + "/#" + route;
-		}
-		else {
-			changePage(route);
-		}
 	});
 })
 
@@ -65,39 +52,26 @@ function NavigationSetup() {
 				$(this).closest('.ui.small.modal').find('.ui.primary.button').click();
 			}
 		}
-	})
-}
+	});
 
-function changePage(targetPage) {
-	var assignmentToLoad = $('a.item.' + targetPage).data('route');
-	$('a.item.' + targetPage).click();
-
-	cleanUp();
-
-	if(!!ko.dataFor($('.assignmentSpace')[0])) {
-		ko.cleanNode($('.assignmentSpace')[0]);
+	Router.registerRouting();
+	function getRouteIfExists() {
+		var url = window.location.href;
+		var route = url.split('#')[1];
+		if(route) {
+			return route;
+		}
+		else {
+			return false;
+		}
 	}
-
-	if(assignmentToLoad !== '') {
-		$('.assignmentSpace').load(assignmentToLoad);
+	var pageRoute = getRouteIfExists();
+	if(pageRoute) {
+		Router.loadContent(pageRoute);
 	}
 	else {
-		$('.assignmentSpace').html('');
+		Router.loadContent('home');
 	}
-
-	home_view_model.pageRoute($('a.item.' + targetPage).find('span').text());
-}
-
-function cleanUp() {
-	if(typeof window.canvas != 'undefined') {
-		window.canvas.clear();
-	}
-	
-	$.each(window.intervalObjects, function(index, obj) {
-    	if(obj !== null) {
-    		clearInterval(obj);
-    	}
-	});
 }
 
 function SubscriptionSetup() {
@@ -121,4 +95,23 @@ function showMessage(isSuccess, messageTitle, messageBody) {
 	home_view_model.messageType = isSuccess;
 	home_view_model.ajaxHeaderMessage(messageTitle);
 	home_view_model.ajaxBodyMessage(messageBody);
+}
+
+function cleanUpArtifacts() {
+	if(!'canvas' in window) {
+		window.canvas.clear();
+	}
+	
+	$.each(window.intervalObjects, function(index, obj) {
+    	if(obj !== null) {
+    		clearInterval(obj);
+    	}
+	});
+	if(typeof Router.contentArea[0] === 'undefined') {
+		Router.contentArea = $('.assignmentSpace');
+	}
+
+	if(!!ko.dataFor(Router.contentArea[0])) {
+		ko.cleanNode(Router.contentArea[0]);
+	}
 }

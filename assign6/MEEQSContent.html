@@ -1,0 +1,181 @@
+<h3 data-bind="visible: !home_view_model.loggedIn()">
+	You must be logged in to use the restaurant rating system!
+</h3>
+
+<div class="ui stackable grid" style="margin-top: 1%;" data-bind="visible: home_view_model.loggedIn()">
+	<div class="one wide column"></div>
+	<div class="seven wide column">
+		<div class="ui small form">
+			<h3 class="ui header">MEEQS</h3>
+			<div id="meeqsTabs" class="ui top attached tabular menu">
+				<a class="active item" data-tab="Rate">Rate</a>
+				<a class="item" data-tab="List">List</a>
+				<a class="item" data-tab="Add">Add</a>
+				<a class="item" data-tab="ERD">ERD</a>
+				<a class="item" data-tab="Administration" data-bind="visible: home_view_model.isAdministrator()">Administration</a>
+			</div>
+
+			<div class="ui bottom attached active tab segment" data-tab="Rate">
+				<div class="six wide field">
+					<div id="restaurants" style="min-width: 220px;" class="ui fluid search selection dropdown">
+						<input type="hidden" name="selectedRestaurant" data-bind="value: selectedRestaurant" />
+						<div class="default text">Select a Restaurant</div>
+						<i class="dropdown icon"></i>
+						<div class="menu" data-bind="foreach: restaurantNames">
+							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+						</div>
+					</div>
+
+					<div id="restaurantLocations" style="min-width: 220px;" class="ui fluid search selection dropdown" data-bind="visible: restaurantLocations().length > 1">
+						<input type="hidden" data-bind="value: selectedRestaurantLocation" />
+						<div class="default text">Pick Location</div>
+						<i class="dropdown icon"></i>
+						<div class="menu" data-bind="foreach: restaurantLocations">
+							<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+						</div>
+					</div>
+					<span data-bind="visible: restaurantLocations().length == 1">
+						<i class="marker icon"></i>
+						<span id="singleRestaurantLocation" data-bind="text: selectedRestaurantLocation"></span>
+					</span>
+				</div>
+
+				<div data-bind="foreach: rating">
+					<div class="two fields">
+						<div class="two wide field" style="min-width: 88px;">
+							<span data-bind="text: categoryName"></span>
+						</div>
+						<div class="two wide field" style="min-width: 88px;">
+							<i class="thumbs down link icon" data-bind="event: {
+								mouseover: function() { $root.hoverHighlight(softRating, 0) },
+								mouseout: function() { $root.removeHighlight(softRating) }
+							},
+							click: function() { $root.clickHighlight(hardRating, 0) },
+							css: { outline: isZeroSelected() }"></i>
+							<span data-bind="foreach: new Array($root.numberOfStars())">
+								<i class="green star link icon" data-bind="event: {
+									mouseover: function() { $root.hoverHighlight($parent.softRating, $index()+1) },
+									mouseout: function() { $root.removeHighlight($parent.softRating) }
+								},
+								click: function() { $root.clickHighlight($parent.hardRating, $index()+1) },
+								css: { empty: $parent.isStarSelected($index()+1) }"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="inline fields" style="min-width: 190px;">
+					<div class="field">
+						<div class="ui inverted green button" data-bind="click: submitRating">Submit</div>
+					</div>
+					<div class="field">
+						<div class="ui inverted red button" data-bind="click: clearForm">Clear</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="ui bottom attached tab segment" data-tab="List">
+				<table class="ui green striped celled table">
+					<thead>
+						<tr>
+							<th>Restaurant Name</th>
+							<th>Menu Rating</th>
+							<th>Enviroment Rating</th>
+							<th>Cost Rating</th>
+							<th>Quality Rating</th>
+							<th>Service Rating</td>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: averageRestaurantRatings">
+						<tr>
+							<td data-bind="text: restaurantName"></td>
+							<td data-bind="text: menuRating"></td>
+							<td data-bind="text: environmentRating"></td>
+							<td data-bind="text: costRating"></td>
+							<td data-bind="text: qualityRating"></td>
+							<td data-bind="text: serviceRating"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="ui bottom attached tab segment" data-tab="Add">
+				<div class="ui stackable two column grid" data-bind="with: addRestaurantData">
+					<div class="column">
+						<div class="ui input">
+							<input placeholder="Restaurant Name" type="text" data-bind="textInput: restaurantName" />
+						</div>
+
+						<div id="restaurantEthnicities" style="min-width: 220px;" class="ui fluid search selection dropdown">
+							<input type="hidden" data-bind="value: restaurantEthnicity" />
+							<div class="default text">Restaurant Ethnicity</div>
+							<i class="dropdown icon"></i>
+							<div class="menu" data-bind="foreach: Object.keys($root.restaurantEthnicites())">
+								<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+							</div>
+						</div>
+
+						<div id="restaurantTypes" style="min-width: 220px;" class="ui fluid search selection dropdown">
+							<input type="hidden" data-bind="value: restaurantType" />
+							<div class="default text">Restaurant Type</div>
+							<i class="dropdown icon"></i>
+							<div class="menu" data-bind="foreach: Object.keys($root.restaurantTypes())">
+								<div class="item" data-bind="attr: {'data-value': $data}, text: $data"></div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="column">
+						<div class="ui input">
+							<input placeholder="City" type="text" data-bind="textInput: restaurantCity" />
+						</div>
+
+						<div id="states" style="min-width: 220px;" class="ui fluid search selection dropdown">
+							<input type="hidden" data-bind="value: restaurantState" />
+							<div class="default text">State</div>
+							<i class="dropdown icon"></i>
+							<div class="menu" data-bind="foreach: MEEQSHelpers.states">
+								<div class="item" data-bind="attr: {'data-value': name}, text: name"></div>
+							</div>
+						</div>
+
+						<div class="ui input">
+							<input placeholder="Zip" type="text" data-bind="textInput: restaurantZip" />
+						</div>
+
+						<div class="ui input">
+							<input placeholder="Street Address" type="text" data-bind="textInput: restaurantStreetAddress" />
+						</div>
+					</div>
+
+					<div class="column">
+						<div class="ui inverted green button" data-bind="click: function() { $root.addRestaurant($data, $root) };">Add Restaurant</div>
+						<div class="ui inverted red button" data-bind="click: function() {$root.cancelAddRestaurant($data, $root) }">Cancel</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="ui bottom attached tab segment" data-tab="Administration">
+				<div class="ui internally celled three column grid" data-bind="foreach: restaurantAdminList">
+					<div class="row">
+						<div class="column" data-bind="text: restaurantName"></div>
+						<div class="column" data-bind="text: restaurantStreetAddress"></div>
+						<div class="column">
+							<i class="green link remove icon" data-bind="click: function() { $root.deleteRestaurantLocation($data, $parent) }"></i>
+							<i class="green link plus icon" data-bind="visible: !isApproved, click: function() { $root.approveRestaurant($data, $parent) }"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="ui bottom attached tab segment" data-tab="ERD">
+				<img src="assign6/assign6ERD.jpg" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="assign6/MEEQSHelpers.js"></script>
+<script type="text/javascript" src="assign6/MEEQSViewModel.js"></script>
+<script type="text/javascript" src="assign6/MEEQSViewController.js"></script>
